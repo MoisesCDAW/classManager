@@ -13,7 +13,12 @@ return new class extends Migration
     {
         Schema::create('absences', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->text("comment");
+            $table->time('startHour', precision: 0);
+            $table->time('endHour', precision: 0);
             $table->timestamps();
+            
         });
     }
 
