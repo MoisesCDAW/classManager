@@ -16,15 +16,15 @@ return new class extends Migration
     {
         // roles
         $admin = Role::create(['name' => 'admin']);
-        Role::create(['name' => 'profesor']);
+        Role::create(['name' => 'professor']);
 
         // permissions
-        $addProfesor = Permission::create(['name' => 'add profesors']);
+        $addProfessor = Permission::create(['name' => 'add professors']);
         $editAbsence = Permission::create(['name' => 'edit absence']);
         $deleteAbsence = Permission::create(['name' => 'delete absence']);
 
         // assign permissions to roles
-        $admin->givePermissionTo([$addProfesor, $editAbsence, $deleteAbsence]);
+        $admin->givePermissionTo([$addProfessor, $editAbsence, $deleteAbsence]);
     }
 
     /**

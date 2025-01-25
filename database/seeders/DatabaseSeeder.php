@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Absence;
 use App\Models\Department;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -30,7 +30,20 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('aA1$qwer'),
         ]);
 
+        // create other user
+        User::create([
+            'department_id' => 1,
+            'name' => 'Moisés',
+            'email' => 'moises@gmail.com',
+            'password' => Hash::make('aA1$qwer'),
+        ]);
+
         // assign roles to users
         User::find(1)->assignRole('admin');
+        User::find(2)->assignRole('professor');
+
+
+        // Create absences
+        Absence::factory(12)->create();
     }
 }
