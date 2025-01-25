@@ -99,11 +99,11 @@
 
                     <!-- Break -->
                     <div class="text-sm flex justify-center h-[5vh]">10:45 <br> 11:15</div>
-                    <div class="border-2 bg-gray-200"></div>
-                    <div class="border-2 bg-gray-200"></div>
-                    <div class="border-2 bg-gray-200" ></div>
-                    <div class="border-2 bg-gray-200"></div>
-                    <div class="border-2 bg-gray-200"></div>
+                    <div class="border-2 bg-[#ddd]"></div>
+                    <div class="border-2 bg-[#ddd]"></div>
+                    <div class="border-2 bg-[#ddd]" ></div>
+                    <div class="border-2 bg-[#ddd]"></div>
+                    <div class="border-2 bg-[#ddd]"></div>
 
 
                     <!-- Tr 4 -->
