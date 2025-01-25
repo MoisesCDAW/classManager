@@ -25,11 +25,6 @@ return new class extends Migration
 
         // assign permissions to roles
         $admin->givePermissionTo([$addProfesor, $editAbsence, $deleteAbsence]);
-
-        // assign roles to users
-        $user = User::find(1);
-        $user->assignRole('admin');
-        
     }
 
     /**
