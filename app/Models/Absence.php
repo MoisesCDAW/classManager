@@ -20,6 +20,8 @@ class Absence extends Model
         'comment',
         'startHour',
         'endHour',
+        'hourNumber',
+        'dayNumber',
     ];
 
     /**

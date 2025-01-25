@@ -17,17 +17,9 @@ class AbsenceFactory extends Factory
     public function definition(): array
     {
 
-        $startHours = [
+        // Start in index 0 for 8:00 and end in 7 for 14:00
+        $hours = [
             '08:00',
-            '08:55',
-            '09:50',
-            '10:45',
-            '11:15',
-            '12:10',
-            '13:05',
-        ];
-
-        $endtHours = [
             '08:55',
             '09:50',
             '10:45',
@@ -37,14 +29,28 @@ class AbsenceFactory extends Factory
             '14:00',
         ];
 
-        $start = fake()->numberBetween(0, 6);
-        $end = fake()->numberBetween($start+1, 6);
 
+        // Start in index 0 for monday and end in 4 for friday
+        $days = [
+            'monday',
+            'tuesday',
+            'wednesday',
+            'thursday',
+            'friday',
+        ];
+
+        // Random hour
+        $hour = fake()->numberBetween(0, count($hours)-2);
+
+
+        // Return the array with the data
         return [
             'user_id' => fake()->numberBetween(1, 2),
             'comment' => fake()->text(),
-            'startHour' => $startHours[$start],
-            'endHour' => $endtHours[$end],
+            'startHour' => $hours[$hour],
+            'endHour' => $hours[$hour+1],
+            'hourNumber' => $hour,
+            'dayNumber' => fake()->numberBetween(0, count($days)-1),
         ];
     }
 }

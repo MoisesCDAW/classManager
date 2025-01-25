@@ -53,100 +53,32 @@
                     <div class="text-sm">Hora</div>
                     <div class="text-sm">Lunes</div>
                     <div class="text-sm">Martes</div>
-                    <div class="text-sm">Miércoles</div>
+                    <div class="text-sm">Miér.</div>
                     <div class="text-sm">Jueves</div>
                     <div class="text-sm">Viernes</div>
 
                     <!-- Tr 1 -->
-                    <div class="text-sm p-4 flex justify-center h-[8vh]">8:00 <br> 8:55</div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block">
-                        <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center bg-[#CCFFFF] text-gray-500 cursor-pointer">7</div>
-                    </div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block"></div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block">
-                        <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center bg-[#CCFFFF] text-gray-500 cursor-pointer">3</div>
-                    </div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block"></div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block"></div>
+                    @foreach ($morningSchedule as $hour)
+                        <div class="text-sm p-4 flex justify-center h-[8vh]">{{$hour[0]}} <br> {{$hour[1]}}</div>
 
+                        @foreach ($days as $day)
+                            @foreach ($absences as $absence)
 
-                    <!-- Tr 2 -->
-                    <div class="text-sm p-4 flex justify-center h-[8vh]">8:55 <br> 9:50</div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block">
-                        <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center bg-[#CCFFCC] text-gray-500 cursor-pointer">1</div>
-                    </div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block"></div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block">
-                        <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center bg-[#CCFFCC] text-gray-500 cursor-pointer">1</div>
-                    </div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block"></div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block"></div>
+                                {{-- Check if the items are from this row --}}
+                                @if (($absence->hourNumber==$loop->parent->index))
+                                    {{-- If are from this row, check day --}}
+                                    @if ($absence->dayNumber==$loop->index)
+                                        {{-- <div class="border-2 rounded-lg flex justify-center sm:block bg-[{{$hour[4]}}]">
+                                            <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center bg-[{{$hour[2]}}] text-gray-500 cursor-pointer">1</div>    
+                                        </div> --}}
+                                    @endif
+                                @endif
+                                        
+                            @endforeach
 
-
-                    <!-- Tr 3 -->
-                    <div class="text-sm p-4 flex justify-center h-[8vh]">9:50 <br> 10:45</div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block">
-                        <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center bg-[#CCCCFF] text-gray-500 cursor-pointer">3</div>
-                    </div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block">
-                        <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center bg-[#CCCCFF] text-gray-500 cursor-pointer">3</div>
-                    </div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block"></div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block">
-                        <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center bg-[#CCCCFF] text-gray-500 cursor-pointer">3</div>
-                    </div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block"></div>
-
-                    <!-- Break -->
-                    <div class="text-sm flex justify-center h-[5vh]">10:45 <br> 11:15</div>
-                    <div class="border-2 bg-[#ddd]"></div>
-                    <div class="border-2 bg-[#ddd]"></div>
-                    <div class="border-2 bg-[#ddd]" ></div>
-                    <div class="border-2 bg-[#ddd]"></div>
-                    <div class="border-2 bg-[#ddd]"></div>
-
-
-                    <!-- Tr 4 -->
-                    <div class="text-sm p-4 flex justify-center h-[8vh]">11:15 <br> 12:10</div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block">
-                        <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center bg-[#FFCCFF] text-gray-500 cursor-pointer">2</div>
-                    </div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block">
-                        <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center bg-[#FFCCFF] text-gray-500 cursor-pointer">2</div>
-                    </div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block">
-                        <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center bg-[#FFCCFF] text-gray-500 cursor-pointer">2</div>
-                    </div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block"></div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block">
-                        <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center bg-[#FFCCFF] text-gray-500 cursor-pointer">3</div>
-                    </div>
-
-
-                    <!-- Tr 5 -->
-                    <div class="text-sm p-4 flex justify-center h-[8vh]">12:10 <br> 13:05</div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block">
-                        <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center bg-[#FFFF99] text-gray-500 cursor-pointer">5</div>
-                    </div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block"></div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block">
-                        <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center bg-[#FFFF99] text-gray-500 cursor-pointer">3</div>
-                    </div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block"></div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block"></div>
-
-                    
-                    <!-- Tr 6 -->
-                    <div class="text-sm p-4 flex justify-center h-[8vh]">13:05 <br> 14:00</div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block">
-                        <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center bg-[#dfdfdF] text-gray-500 cursor-pointer">4</div>
-                    </div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block"></div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block"></div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block"></div>
-                    <div class="border-2 rounded-lg flex justify-center sm:block">
-                        <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center bg-[#dfdfdF] text-gray-500 cursor-pointer">4</div>
-                    </div>
+                            <div class="border-2 rounded-lg flex justify-center sm:block bg-[{{$hour[4]}}]"></div>
+                        @endforeach 
+                    @endforeach
                 </div>
             </div>
         </div>

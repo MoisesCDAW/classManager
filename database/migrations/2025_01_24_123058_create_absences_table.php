@@ -17,6 +17,8 @@ return new class extends Migration
             $table->text("comment");
             $table->time('startHour', precision: 0);
             $table->time('endHour', precision: 0);
+            $table->integer('hourNumber');
+            $table->integer('dayNumber');
             $table->timestamps();
         });
     }
