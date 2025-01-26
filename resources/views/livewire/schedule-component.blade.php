@@ -63,8 +63,10 @@
                             <div class="border-2 rounded-lg flex justify-center sm:block" style="background-color: {{$hour[3]}}">
 
                                 {{-- First param: dayNumber, Second param: hourNumber --}}
-                                @if ($this->printAbsences($loop->index, $loop->parent->index))
-                                    <a href="#app-blade" wire:click="toggleShowAllAbsences" class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center text-gray-500 cursor-pointer" style="background-color: {{$hour[2]}}">{{ $this->absencesTotalPerDay }}</a>
+                                @if ($this->printAbsences($loop->parent->index, $loop->index))
+
+                                    {{-- A link was applied at the top of the page (layout: app-blade) to control that no content is displayed outside the space occupied by the modal. --}}
+                                    <a href="#app-blade" wire:click="toggleShowAllAbsences({{$loop->parent->index}}, {{$loop->index}})" class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center text-gray-500 cursor-pointer" style="background-color: {{$hour[2]}}">{{ $this->absencesTotalForDay }}</a>
                                 @endif
 
                             </div>
@@ -155,16 +157,21 @@
                     <div class="flex shrink-0 items-center justify-between pb-4 font-medium text-slate-800">
 
                         {{-- Day and time block --}}
-                        <p class="text-lg">Lun 20-01-2025 / 11:45 - 12:10</p>
+                        <p class="text-lg text-slate-300">{{$days[$dayNumber]}} / {{$morningSchedule[$hourNumber][0]}} a {{$morningSchedule[$hourNumber][1]}}</p>
 
                         {{-- Order buttons --}}
-                        <button class="rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-slate-600 hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
-                            Orden descendente
-                        </button>
-                        <button class="hidden rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-slate-600 hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
-                            Orden ascendente
-                        </button>
-                        
+                        @if ($orderDesc)
+                            <button wire:click="orderByDesc" class="rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-slate-300 hover:text-slate-800 hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
+                                Ordenar descendente
+                            </button>
+                        @endif
+
+                        @if ($orderAsc)
+                            <button wire:click="orderByAsc" class="rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-slate-300 hover:text-slate-800 hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
+                                Ordenar ascendente
+                            </button>
+                        @endif
+
                     </div>
 
                     <!-- Modal body -->
@@ -211,6 +218,7 @@
             </div>
         @endif
         <!-- MODAL VIEW END -->
+
 
         <!-- MODAL EDIT START -->
         @if ($viewEditAbsence)

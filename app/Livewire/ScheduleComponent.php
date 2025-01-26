@@ -29,7 +29,8 @@ class ScheduleComponent extends Component
     /**
      * schedule days, The days start at 0 with Monday being the first day.
      */
-    public $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+    public $days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
+
 
     /**
      * All absences of the school
@@ -39,7 +40,7 @@ class ScheduleComponent extends Component
     /**
      * Absences total per day, It will be calculated dynamically based on the day the loop pointer is at in the view of this component.
      */
-    public $absencesTotalPerDay = 0;
+    public $absencesTotalForDay = 0;
 
     /**
      * True to show the add absence form.
@@ -56,6 +57,17 @@ class ScheduleComponent extends Component
      */
     public $viewEditAbsence = false;
 
+    /**
+     * The hour number and day number of the absence
+     */
+    public $hourNumber = null;
+    public $dayNumber = null;
+
+    /**
+     * Order by to show the absences
+     */
+    public $orderDesc = true;
+    public $orderAsc = false;
 
     /**
      * Render the component
@@ -85,16 +97,21 @@ class ScheduleComponent extends Component
      * 
      * return true if there is any absence in the day and time block
      */
-    function printAbsences($dayNumber, $hourNumber){
-        $this->absencesTotalPerDay = 0;
+    function printAbsences($hourNumber, $dayNumber){
+        $this->absencesTotalForDay = 0;
 
         foreach ($this->absences as $absence) {
             if (($absence->hourNumber==$hourNumber) && ($absence->dayNumber==$dayNumber)) {
-                $this->absencesTotalPerDay++;
+                $this->absencesTotalForDay++;
             }
         }
 
-        return $this->absencesTotalPerDay>0;
+        return $this->absencesTotalForDay>0;
+    }
+
+
+    function getAbsencesForDayAndHour(){
+        
     }
 
 
@@ -109,9 +126,12 @@ class ScheduleComponent extends Component
     /**
      * Toggle the view of all absences
      */
-    function toggleShowAllAbsences(){
+    function toggleShowAllAbsences($hourNumber=null, $dayNumber=null){
         $this->viewAllAbsences = !$this->viewAllAbsences;
         $this->toggleScroll();
+        $this->hourNumber = $hourNumber;
+        $this->dayNumber = $dayNumber;
+        $this->getAbsencesForDayAndHour();
     }
 
 
@@ -131,6 +151,22 @@ class ScheduleComponent extends Component
         $this->viewEditAbsence = !$this->viewEditAbsence;
         $this->toggleScroll();
     }  
+
+    /**
+     * Order the absences by descending
+     */
+    function orderByDesc(){
+        $this->orderDesc = false;
+        $this->orderAsc = true;
+    }
+
+    /**
+     * Order the absences by ascending
+     */
+    function orderByAsc(){
+        $this->orderDesc = true;
+        $this->orderAsc = false;
+    }
     
     
     /**
