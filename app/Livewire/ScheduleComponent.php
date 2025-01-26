@@ -42,6 +42,22 @@ class ScheduleComponent extends Component
     public $absencesTotalPerDay = 0;
 
     /**
+     * True to show the add absence form.
+     */
+    public $viewAddAbsence = false;
+
+    /**
+     * True to show all absences when clicking on a specific day.
+     */
+    public $viewAllAbsences = false;
+
+    /**
+     * True to show the edit absence form.
+     */
+    public $viewEditAbsence = false;
+
+
+    /**
      * Render the component
      */
     public function render()
@@ -82,6 +98,41 @@ class ScheduleComponent extends Component
     }
 
 
+    /**
+     * Manages when to show or hide the scroll sidebar.
+     */
+    function toggleScroll(){
+        $this->js("document.querySelector('html').classList.toggle('overflow-hidden')");
+    }
+
+
+    /**
+     * Toggle the view of all absences
+     */
+    function toggleShowAllAbsences(){
+        $this->viewAllAbsences = !$this->viewAllAbsences;
+        $this->toggleScroll();
+    }
+
+
+    /**
+     * Toggle the view of the add absence form
+     */
+    function toggleShowAddAbsence(){
+        $this->viewAddAbsence = !$this->viewAddAbsence;
+        $this->toggleScroll();
+    } 
+    
+    
+    /**
+     * Toggle the view of the add absence form
+     */
+    function toggleShowEditAbsence(){
+        $this->viewEditAbsence = !$this->viewEditAbsence;
+        $this->toggleScroll();
+    }  
+    
+    
     /**
      * Mount the component
      */
