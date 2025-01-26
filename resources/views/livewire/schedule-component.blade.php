@@ -13,7 +13,7 @@
                             <div>
                                 <h3 class="font-semibold text-gray-800">Registro de Ausencias</h3>
                                 <p class="text-gray-500 text-sm">Detalles de inasistencias para cada día en cada hora.</p>
-                                <select class="text-gray-500 text-sm font-bold mt-2 border-none">
+                                <select class="text-gray-500 text-sm font-bold mt-2 border border-gray-300 rounded-md">
                                     <option class="text-gray-500 text-sm font-bold mt-2">2025 - Semana: 20/01 al 24/01</option>
                                     <option class="text-gray-500 text-sm font-bold mt-2">2025 - Semana: 27/01 al 31/01</option>
                                     <option class="text-gray-500 text-sm font-bold mt-2">2025 - Semana: 03/02 al 07/01</option>
@@ -90,29 +90,31 @@
                     <div class="flex flex-col gap-10 h-[70vh] sm:h-[55vh] lg:h-[70vh] w-full overflow-y-scroll pb-10 items-center">
 
                         <!-- Vista Admin -->
-                        <div class="flex flex-col gap-4 w-[70vw] sm:w-[45vw]">
-                            <label>
-                                Selecciona el departamento para poder ingresar el nombre y apellidos del profesor
-                                <select class="w-[100%] bg-gray-900 border-gray-700 rounded-md p-2 py-3 py-3 mt-3">
-                                    <option>Seleccionar departamento</option>
-                                    <option>Informática</option>
-                                    <option>Idiomas</option>
-                                    <option>Ciencias</option>
-                                </select>
-                            </label>
+                        @role("admin")
+                            <div class="flex flex-col gap-4 w-[70vw] sm:w-[45vw]">
+                                <label>
+                                    Selecciona el departamento para poder ingresar el nombre y apellidos del profesor
+                                    <select class="w-[100%] bg-gray-900 border-gray-700 rounded-md p-2 py-3 py-3 mt-3">
+                                        <option>Seleccionar departamento</option>
+                                        <option>Informática</option>
+                                        <option>Idiomas</option>
+                                        <option>Ciencias</option>
+                                    </select>
+                                </label>
 
-                            <div class="flex flex-col lg:flex-row gap-5 justify-center">
-                                <label class="w-[70vw] sm:w-[100%] lg:w-[50%]">
-                                    Nombre del profesor<br>
-                                    <input type="text" class="w-full bg-gray-900 border-gray-700 rounded-md p-2 py-3 mt-3" disabled>
-                                </label>
-                                
-                                <label class="w-[70vw] sm:w-[100%] lg:w-[50%]">
-                                    Apellidos del profesor<br>
-                                    <input type="text" class="w-full bg-gray-900 border-gray-700 rounded-md p-2 py-3 mt-3" disabled>
-                                </label>
+                                <div class="flex flex-col lg:flex-row gap-5 justify-center">
+                                    <label class="w-[70vw] sm:w-[100%] lg:w-[50%]">
+                                        Nombre del profesor<br>
+                                        <input type="text" class="w-full bg-gray-900 border-gray-700 rounded-md p-2 py-3 mt-3" disabled>
+                                    </label>
+                                    
+                                    <label class="w-[70vw] sm:w-[100%] lg:w-[50%]">
+                                        Apellidos del profesor<br>
+                                        <input type="text" class="w-full bg-gray-900 border-gray-700 rounded-md p-2 py-3 mt-3" disabled>
+                                    </label>
+                                </div>
                             </div>
-                        </div>
+                        @endrole
 
                         <label class="w-[70vw] sm:w-[45vw]">
                             Especifica la fecha de la falta <br>
@@ -122,13 +124,13 @@
                         <!-- Hours and comments -->
                         @foreach ($morningSchedule as $hour)
                             <div class="flex flex-col sm:p-4 text-center items-center gap-3 sm:mt-0">
-                                <div class="flex gap-4 sm:w-[70vw] lg:w-[50vw]">
+                                <div class="flex gap-4 sm:w-[70vw] lg:w-[45vw]">
                                     <input type="checkbox" class="w-5 h-5 border-2 cursor-pointer rounded-md bg-gray-900">
                                     <div class="flex justify-center">{{$hour[0]}} a {{$hour[1]}}</div>
                                 </div>
 
                                 <!-- Create the add comment container -->
-                                <textarea class="p-4 mt-4 bg-gray-900 w-[80vw] lg:w-[60vw] h-[35vh] rounded-lg border-gray-700"></textarea>
+                                <textarea class="hidden p-4 mt-4 bg-gray-900 w-[80vw] lg:w-[60vw] h-[25vh] rounded-lg border-gray-700"></textarea>
                             </div>
                         @endforeach                   
                     </div>
@@ -185,17 +187,19 @@
                                     {{-- Professor Name --}}
                                     <h3 class="sm:text-xl font-semibold">{{$professor[0]->name}}</h3>
 
-                                    <div class="flex gap-4">
-                                        {{-- Edit button --}}
-                                        <button wire:click="toggleShowEditAbsence" class="p-1 text-gray-500 transition-colors rounded hover:bg-gray-100 focus:outline-none">
-                                            <svg xmlns="http://www.w3.org/2000/svg" id="Filled" viewBox="0 0 24 24" width="16" height="16" fill="#000"><path d="M1.172,19.119A4,4,0,0,0,0,21.947V24H2.053a4,4,0,0,0,2.828-1.172L18.224,9.485,14.515,5.776Z"/><path d="M23.145.855a2.622,2.622,0,0,0-3.71,0L15.929,4.362l3.709,3.709,3.507-3.506A2.622,2.622,0,0,0,23.145.855Z"/></svg>
-                                        </button>
-                                        
-                                        {{-- Delete button --}}
-                                        <button class="p-1 text-gray-500 transition-colors rounded hover:bg-gray-100 focus:outline-none">
-                                            <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" width="16" height="16" viewBox="0 0 24 24" fill="#000"><path d="m22,4h-4.101c-.465-2.279-2.484-4-4.899-4h-2c-2.414,0-4.434,1.721-4.899,4H2c-.552,0-1,.447-1,1s.448,1,1,1h.86l1.296,13.479c.248,2.578,2.388,4.521,4.977,4.521h5.727c2.593,0,4.733-1.947,4.978-4.528l1.276-13.472h.885c.552,0,1-.447,1-1s-.448-1-1-1Zm-11-2h2c1.302,0,2.402.839,2.816,2h-7.631c.414-1.161,1.514-2,2.816-2Zm4.707,14.293c.391.391.391,1.023,0,1.414-.195.195-.451.293-.707.293s-.512-.098-.707-.293l-2.293-2.293-2.293,2.293c-.195.195-.451.293-.707.293s-.512-.098-.707-.293c-.391-.391-.391-1.023,0-1.414l2.293-2.293-2.293-2.293c-.391-.391-.391-1.023,0-1.414s1.023-.391,1.414,0l2.293,2.293,2.293-2.293c.391-.391,1.023-.391,1.414,0s.391,1.023,0,1.414l-2.293,2.293,2.293,2.293Z"/></svg>
-                                        </button>
-                                    </div>
+                                    @if(auth()->user()->hasRole('admin') || $this->checkTimeToEdit($absencesForDayAndHour[$loop->index]))
+                                        <div class="flex gap-4">
+                                            {{-- Edit button --}}
+                                            <button wire:click="toggleShowEditAbsence" class="p-1 text-gray-500 transition-colors rounded hover:bg-gray-100 focus:outline-none">
+                                                <svg xmlns="http://www.w3.org/2000/svg" id="Filled" viewBox="0 0 24 24" width="16" height="16" fill="#000"><path d="M1.172,19.119A4,4,0,0,0,0,21.947V24H2.053a4,4,0,0,0,2.828-1.172L18.224,9.485,14.515,5.776Z"/><path d="M23.145.855a2.622,2.622,0,0,0-3.71,0L15.929,4.362l3.709,3.709,3.507-3.506A2.622,2.622,0,0,0,23.145.855Z"/></svg>
+                                            </button>
+                                            
+                                            {{-- Delete button --}}
+                                            <button class="p-1 text-gray-500 transition-colors rounded hover:bg-gray-100 focus:outline-none">
+                                                <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" width="16" height="16" viewBox="0 0 24 24" fill="#000"><path d="m22,4h-4.101c-.465-2.279-2.484-4-4.899-4h-2c-2.414,0-4.434,1.721-4.899,4H2c-.552,0-1,.447-1,1s.448,1,1,1h.86l1.296,13.479c.248,2.578,2.388,4.521,4.977,4.521h5.727c2.593,0,4.733-1.947,4.978-4.528l1.276-13.472h.885c.552,0,1-.447,1-1s-.448-1-1-1Zm-11-2h2c1.302,0,2.402.839,2.816,2h-7.631c.414-1.161,1.514-2,2.816-2Zm4.707,14.293c.391.391.391,1.023,0,1.414-.195.195-.451.293-.707.293s-.512-.098-.707-.293l-2.293-2.293-2.293,2.293c-.195.195-.451.293-.707.293s-.512-.098-.707-.293c-.391-.391-.391-1.023,0-1.414l2.293-2.293-2.293-2.293c-.391-.391-.391-1.023,0-1.414s1.023-.391,1.414,0l2.293,2.293,2.293-2.293c.391-.391,1.023-.391,1.414,0s.391,1.023,0,1.414l-2.293,2.293,2.293,2.293Z"/></svg>
+                                            </button>
+                                        </div>
+                                    @endif
                                 </div>
 
                                 {{-- Comment --}}
@@ -210,7 +214,7 @@
                             </div>
                         @endforeach
                     </div>
-                    
+
                 <!-- Modal buttons -->
                 <div class="flex shrink-0 flex-wrap items-center pt-4 justify-end">
                     <button wire:click="toggleShowAllAbsences" class="rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-sm text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">

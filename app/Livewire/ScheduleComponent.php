@@ -76,6 +76,11 @@ class ScheduleComponent extends Component
     public $absencesForDayAndHour = [];
 
     /**
+     * It allows controlling the time during which a non-admin user can edit or delete an absence. This applies only to the absences created by the user.
+     */
+    public $timeToEdit = false;
+
+    /**
      * Render the component
      */
     public function render()
@@ -197,7 +202,27 @@ class ScheduleComponent extends Component
         $this->orderAsc = false;
     }
     
-    
+    /**
+     * Check if the time to edit the absence has passed
+     */
+    function checkTimeToEdit($absence){
+        $onTime = false;
+        $currentTime = date_create();
+        $absenceTime = date_create($absence->created_at);
+        $timeToEdit = 10; // 10 minutes
+        $interval = $currentTime->diff($absenceTime);
+
+        $days = $interval->format("%a");
+        $hours = $interval->format("%R%h");
+        $minutes = $interval->format("%i");
+
+        if ($days == 0 && $hours == 0 && $minutes <= $timeToEdit) {
+            $onTime = true;
+        }
+
+        return $onTime;
+    }
+
     /**
      * Mount the component
      */
