@@ -161,13 +161,13 @@
 
                         {{-- Order buttons --}}
                         @if ($orderDesc)
-                            <button wire:click="orderByDesc" class="rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-slate-300 hover:text-slate-800 hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
+                            <button wire:click="orderByDesc" class="rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-gray-300 shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
                                 Ordenar descendente
                             </button>
                         @endif
 
                         @if ($orderAsc)
-                            <button wire:click="orderByAsc" class="rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-slate-300 hover:text-slate-800 hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
+                            <button wire:click="orderByAsc" class="rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-gray-300 shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
                                 Ordenar ascendente
                             </button>
                         @endif
@@ -177,43 +177,45 @@
                     <!-- Modal body -->
                     <div class="flex pe-4 flex-col gap-4 h-[65vh] sm:h-[55vh] lg:h-[70vh] border-slate-200 py-4 leading-normal text-slate-600 font-light overflow-y-scroll">
 
-                        <!-- Card -->
-                        <div class="w-full p-6 bg-white border rounded-lg shadow-lg">
-                            <div class="flex justify-between items-start">
+                        @foreach ($professors as $professor) 
+                            <!-- Card -->
+                            <div class="w-full p-6 bg-white border rounded-lg shadow-lg">
+                                <div class="flex justify-between items-start">
 
-                                {{-- Professor Name --}}
-                                <h3 class="sm:text-xl font-semibold"></h3>
+                                    {{-- Professor Name --}}
+                                    <h3 class="sm:text-xl font-semibold">{{$professor[0]->name}}</h3>
 
-                                <div class="flex gap-4">
-                                    {{-- Edit button --}}
-                                    <button wire:click="toggleShowEditAbsence" class="p-1 text-gray-500 transition-colors rounded hover:bg-gray-100 focus:outline-none">
-                                        <svg xmlns="http://www.w3.org/2000/svg" id="Filled" viewBox="0 0 24 24" width="16" height="16" fill="#000"><path d="M1.172,19.119A4,4,0,0,0,0,21.947V24H2.053a4,4,0,0,0,2.828-1.172L18.224,9.485,14.515,5.776Z"/><path d="M23.145.855a2.622,2.622,0,0,0-3.71,0L15.929,4.362l3.709,3.709,3.507-3.506A2.622,2.622,0,0,0,23.145.855Z"/></svg>
-                                    </button>
-                                    
-                                    {{-- Delete button --}}
-                                    <button class="p-1 text-gray-500 transition-colors rounded hover:bg-gray-100 focus:outline-none">
-                                        <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" width="16" height="16" viewBox="0 0 24 24" fill="#000"><path d="m22,4h-4.101c-.465-2.279-2.484-4-4.899-4h-2c-2.414,0-4.434,1.721-4.899,4H2c-.552,0-1,.447-1,1s.448,1,1,1h.86l1.296,13.479c.248,2.578,2.388,4.521,4.977,4.521h5.727c2.593,0,4.733-1.947,4.978-4.528l1.276-13.472h.885c.552,0,1-.447,1-1s-.448-1-1-1Zm-11-2h2c1.302,0,2.402.839,2.816,2h-7.631c.414-1.161,1.514-2,2.816-2Zm4.707,14.293c.391.391.391,1.023,0,1.414-.195.195-.451.293-.707.293s-.512-.098-.707-.293l-2.293-2.293-2.293,2.293c-.195.195-.451.293-.707.293s-.512-.098-.707-.293c-.391-.391-.391-1.023,0-1.414l2.293-2.293-2.293-2.293c-.391-.391-.391-1.023,0-1.414s1.023-.391,1.414,0l2.293,2.293,2.293-2.293c.391-.391,1.023-.391,1.414,0s.391,1.023,0,1.414l-2.293,2.293,2.293,2.293Z"/></svg>
-                                    </button>
+                                    <div class="flex gap-4">
+                                        {{-- Edit button --}}
+                                        <button wire:click="toggleShowEditAbsence" class="p-1 text-gray-500 transition-colors rounded hover:bg-gray-100 focus:outline-none">
+                                            <svg xmlns="http://www.w3.org/2000/svg" id="Filled" viewBox="0 0 24 24" width="16" height="16" fill="#000"><path d="M1.172,19.119A4,4,0,0,0,0,21.947V24H2.053a4,4,0,0,0,2.828-1.172L18.224,9.485,14.515,5.776Z"/><path d="M23.145.855a2.622,2.622,0,0,0-3.71,0L15.929,4.362l3.709,3.709,3.507-3.506A2.622,2.622,0,0,0,23.145.855Z"/></svg>
+                                        </button>
+                                        
+                                        {{-- Delete button --}}
+                                        <button class="p-1 text-gray-500 transition-colors rounded hover:bg-gray-100 focus:outline-none">
+                                            <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" width="16" height="16" viewBox="0 0 24 24" fill="#000"><path d="m22,4h-4.101c-.465-2.279-2.484-4-4.899-4h-2c-2.414,0-4.434,1.721-4.899,4H2c-.552,0-1,.447-1,1s.448,1,1,1h.86l1.296,13.479c.248,2.578,2.388,4.521,4.977,4.521h5.727c2.593,0,4.733-1.947,4.978-4.528l1.276-13.472h.885c.552,0,1-.447,1-1s-.448-1-1-1Zm-11-2h2c1.302,0,2.402.839,2.816,2h-7.631c.414-1.161,1.514-2,2.816-2Zm4.707,14.293c.391.391.391,1.023,0,1.414-.195.195-.451.293-.707.293s-.512-.098-.707-.293l-2.293-2.293-2.293,2.293c-.195.195-.451.293-.707.293s-.512-.098-.707-.293c-.391-.391-.391-1.023,0-1.414l2.293-2.293-2.293-2.293c-.391-.391-.391-1.023,0-1.414s1.023-.391,1.414,0l2.293,2.293,2.293-2.293c.391-.391,1.023-.391,1.414,0s.391,1.023,0,1.414l-2.293,2.293,2.293,2.293Z"/></svg>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {{-- Comment --}}
+                                <p class="mt-4 text-gray-600 max-w-[90vw] line-clamp-3">{{$absencesForDayAndHour[$loop->index]->comment}}</p>
+                                <a class="text-sm text-gray-600 font-semibold cursor-pointer">Leer más</a> 
+                                
+                                {{-- Department and publication date --}}
+                                <div class="flex items-center justify-between mt-6">
+                                    <span class="ml-1 text-sm text-gray-600">{{$professor[1]->name}}</span>
+                                    <span class="ml-1 text-sm text-gray-600">Publicado: {{$absencesForDayAndHour[$loop->index]->created_at}}</span>
                                 </div>
                             </div>
-
-                            {{-- Comment --}}
-                            <p class="mt-4 text-gray-600 max-w-[90vw] line-clamp-3"></p>
-                            <a class="text-sm text-gray-600 font-semibold cursor-pointer">Leer más</a> 
-                            
-                            {{-- Department and publication date --}}
-                            <div class="flex items-center justify-between mt-6">
-                                <span class="ml-1 text-sm text-gray-600">Informática</span>
-                                <span class="ml-1 text-sm text-gray-600">Publicado: 16-01-2025 9:30</span>
-                            </div>
-                        </div>
-
-                    <!-- Modal buttons -->
-                    <div class="flex shrink-0 flex-wrap items-center pt-4 justify-end">
-                        <button wire:click="toggleShowAllAbsences" class="rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
-                            Cerrar
-                        </button>
+                        @endforeach
                     </div>
+                    
+                <!-- Modal buttons -->
+                <div class="flex shrink-0 flex-wrap items-center pt-4 justify-end">
+                    <button wire:click="toggleShowAllAbsences" class="rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-sm text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                        Cerrar
+                    </button>
                 </div>
             </div>
         @endif

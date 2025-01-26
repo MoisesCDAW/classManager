@@ -70,6 +70,12 @@ class ScheduleComponent extends Component
     public $orderAsc = false;
 
     /**
+     * Professors, absences and departments for a specific day and hour
+     */
+    public $professors = [];
+    public $absencesForDayAndHour = [];
+
+    /**
      * Render the component
      */
     public function render()
@@ -79,9 +85,9 @@ class ScheduleComponent extends Component
 
 
     /**
-     * Get all absences
+     * Get all absences ordered by hour number ascending
      */	
-    function getAllAbsences() {
+    function getAllAbsencesAsec() {
         $absences = DB::table('absences')
                 ->orderBy('hourNumber', 'asc')
                 ->get();
@@ -109,9 +115,32 @@ class ScheduleComponent extends Component
         return $this->absencesTotalForDay>0;
     }
 
-
+    /**
+     * Find all the absences that match the hour and day passed as parameters, along with their respective user and department.
+     */
     function getAbsencesForDayAndHour(){
-        
+        // Reset the professors and absences
+        $this->professors = [];
+        $this->absencesForDayAndHour = [];
+
+        // Find all absences that match the hour and day passed as parameters
+        $this->absencesForDayAndHour = DB::table('absences')
+                ->where('hourNumber', $this->hourNumber)
+                ->where('dayNumber', $this->dayNumber)
+                ->get();
+
+        // Find the user and department of each absence
+        foreach ($this->absencesForDayAndHour as $absence) {
+            $professor = DB::table('users')
+                ->where('id', $absence->user_id)
+                ->first();
+
+            $department = DB::table('departments')
+                ->where('id', $professor->department_id)
+                ->first();
+            
+            array_push($this->professors, [$professor, $department]);
+        }
     }
 
 
@@ -173,7 +202,7 @@ class ScheduleComponent extends Component
      * Mount the component
      */
     function mount(){
-        $this->getAllAbsences();
+        $this->getAllAbsencesAsec();
     }
 
 
