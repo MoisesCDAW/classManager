@@ -62,11 +62,11 @@
                         <div class="text-sm p-4 flex justify-center h-[8vh]">{{$hour[0]}} <br> {{$hour[1]}}</div>
                         
                         @foreach ($days as $day)
-                            <div class="border-2 rounded-lg flex justify-center sm:block bg-[{{$hour[3]}}]">
+                            <div class="border-2 rounded-lg flex justify-center sm:block" style="background-color: {{$hour[3]}}">
 
                                 {{-- First param: dayNumber, Second param: hourNumber --}}
                                 @if ($this->printAbsences($loop->index, $loop->parent->index))
-                                    <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center bg-[{{$hour[2]}}] text-gray-500 cursor-pointer">{{ $this->absencesTotalPerDay }}</div>
+                                    <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center text-gray-500 cursor-pointer" style="background-color: {{$hour[2]}}">{{ $this->absencesTotalPerDay }}</div>
                                 @endif
 
                             </div>
