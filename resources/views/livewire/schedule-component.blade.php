@@ -60,24 +60,17 @@
                     <!-- Tr 1 -->
                     @foreach ($morningSchedule as $hour)
                         <div class="text-sm p-4 flex justify-center h-[8vh]">{{$hour[0]}} <br> {{$hour[1]}}</div>
-
+                        
                         @foreach ($days as $day)
-                            @foreach ($absences as $absence)
+                            <div class="border-2 rounded-lg flex justify-center sm:block bg-[{{$hour[3]}}]">
 
-                                {{-- Check if the items are from this row --}}
-                                @if (($absence->hourNumber==$loop->parent->index))
-                                    {{-- If are from this row, check day --}}
-                                    @if ($absence->dayNumber==$loop->index)
-                                        {{-- <div class="border-2 rounded-lg flex justify-center sm:block bg-[{{$hour[4]}}]">
-                                            <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center bg-[{{$hour[2]}}] text-gray-500 cursor-pointer">1</div>    
-                                        </div> --}}
-                                    @endif
+                                {{-- First param: dayNumber, Second param: hourNumber --}}
+                                @if ($this->printAbsences($loop->index, $loop->parent->index))
+                                    <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center bg-[{{$hour[2]}}] text-gray-500 cursor-pointer">{{ $this->absencesTotalPerDay }}</div>
                                 @endif
-                                        
-                            @endforeach
 
-                            <div class="border-2 rounded-lg flex justify-center sm:block bg-[{{$hour[4]}}]"></div>
-                        @endforeach 
+                            </div>
+                        @endforeach
                     @endforeach
                 </div>
             </div>

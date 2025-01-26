@@ -9,26 +9,25 @@ class ScheduleComponent extends Component
 {
 
     /**
-     * Morning schedule
+     * Morning schedule, The hour numbers will be saved, with a start and end pair considered a single block.
      */
     public $morningSchedule = [
         [
             '8:00', // Start hour
             '8:55', // End hour
             '#CCFFFF', // Item color
-            'commun', // Item type
-            '#fff' // background color
+            '#FFF' // background color
         ],
-        ['8:55', '9:50', '#CCFFCC', 'commun', '#fff'],
-        ['9:50', '10:45', '#CCCCFF', 'commun', '#fff'],
-        ['10:45', '11:15', '#fff', 'break', '#ddd'],
-        ['11:15', '12:10', '#FFCCFF', 'commun', '#fff'],
-        ['12:10', '13:05', '#FFFF99', 'commun', '#fff'],
-        ['13:05', '14:00', '#dfdfdF', 'commun', '#fff'],
+        ['8:55', '9:50', '#CCFFCC', '#FFF'],
+        ['9:50', '10:45', '#CCCCFF', '#FFF'],
+        ['10:45', '11:15', '#FFFFFF', '#DDD'],
+        ['11:15', '12:10', '#FFCCFF', '#FFF'],
+        ['12:10', '13:05', '#FFFF99', '#FFF'],
+        ['13:05', '14:00', '#DFDFDF', '#FFF'],
     ];
 
     /**
-     * schedule days
+     * schedule days, The days start at 0 with Monday being the first day.
      */
     public $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
@@ -37,6 +36,10 @@ class ScheduleComponent extends Component
      */
     public $absences = [];
 
+    /**
+     * Absences total per day, It will be calculated dynamically based on the day the loop pointer is at in the view of this component.
+     */
+    public $absencesTotalPerDay = 0;
 
     /**
      * Render the component
@@ -56,6 +59,26 @@ class ScheduleComponent extends Component
                 ->get();
 
         $this->absences = $absences;
+    }
+
+
+    /**
+     * First, reset the absence counter, then run a loop to go through the "absences" table and check 
+     * which records match the day number and time block number passed as parameters. 
+     * If there is a match, add +1 to the counter.
+     * 
+     * return true if there is any absence in the day and time block
+     */
+    function printAbsences($dayNumber, $hourNumber){
+        $this->absencesTotalPerDay = 0;
+
+        foreach ($this->absences as $absence) {
+            if (($absence->hourNumber==$hourNumber) && ($absence->dayNumber==$dayNumber)) {
+                $this->absencesTotalPerDay++;
+            }
+        }
+
+        return $this->absencesTotalPerDay>0;
     }
 
 
