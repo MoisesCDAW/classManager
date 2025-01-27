@@ -80,6 +80,9 @@ class ScheduleComponent extends Component
      */
     public $timeToEdit = false;
 
+    public $comments = [];
+    public $showComment = false;
+
     /**
      * Render the component
      */
@@ -137,8 +140,8 @@ class ScheduleComponent extends Component
         // Find the user and department of each absence
         foreach ($this->absencesForDayAndHour as $absence) {
             $professor = DB::table('users')
-                ->where('id', $absence->user_id)
-                ->first();
+            ->where('id', $absence->user_id)
+            ->first();
 
             $department = DB::table('departments')
                 ->where('id', $professor->department_id)
@@ -223,13 +226,29 @@ class ScheduleComponent extends Component
         return $onTime;
     }
 
+
+    /**
+     * Add an absence
+     */
+    function addComment($idHour, $idDay) {
+        
+    }
+
+    /**
+     * Toggle the view of the add comment form
+     */
+    function toggleShowAddComment($idHour = null, $idDay = null){
+        $this->showComment = !$this->showComment;
+        $this->addComment($idHour, $idDay);
+    }
+
+
     /**
      * Mount the component
      */
     function mount(){
         $this->getAllAbsencesAsec();
     }
-
-
-    
 }
+
+

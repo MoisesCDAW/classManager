@@ -17,6 +17,7 @@
                                     <option class="text-gray-500 text-sm font-bold mt-2">2025 - Semana: 20/01 al 24/01</option>
                                     <option class="text-gray-500 text-sm font-bold mt-2">2025 - Semana: 27/01 al 31/01</option>
                                     <option class="text-gray-500 text-sm font-bold mt-2">2025 - Semana: 03/02 al 07/01</option>
+                                    <option class="text-gray-500 text-sm font-bold mt-2">2025 - Semana: 10/02 al 14/01</option>
                                 </select>
                             </div>
                         </div>
@@ -36,13 +37,14 @@
                             Turno Tarde
                         </button>
 
-                        <button
+                        <a
+                            href="#app-blade"
                             wire:click="toggleShowAddAbsence"
                             class="h-10 flex select-none items-center gap-2 rounded bg-gray-800 py-2.5 px-4 text-xs font-semibold text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                             type="button">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve" class="w-3 h-3" fill="#fff"><g><path d="M480,224H288V32c0-17.673-14.327-32-32-32s-32,14.327-32,32v192H32c-17.673,0-32,14.327-32,32s14.327,32,32,32h192v192   c0,17.673,14.327,32,32,32s32-14.327,32-32V288h192c17.673,0,32-14.327,32-32S497.673,224,480,224z"/></g></svg>
                             Agregar Ausencia
-                        </button>
+                        </a>
                     </div>
                 </div>
 
@@ -57,12 +59,12 @@
 
                     <!-- Rows and columns -->
                     @foreach ($morningSchedule as $hour)
-                        <div class="text-sm p-4 flex justify-center h-[8vh]">{{$hour[0]}} <br> {{$hour[1]}}</div>
+                        <div class="text-sm p-4 flex justify-center items-center h-[8vh]">{{$hour[0]}} <br> {{$hour[1]}}</div>
                         
                         @foreach ($days as $day)
                             <div class="border-2 rounded-lg flex justify-center sm:block" style="background-color: {{$hour[3]}}">
 
-                                {{-- First param: dayNumber, Second param: hourNumber --}}
+                                {{-- First param: hourNumber, Second param: dayNumber--}}
                                 @if ($this->printAbsences($loop->parent->index, $loop->index))
 
                                     {{-- A link was applied at the top of the page (layout: app-blade) to control that no content is displayed outside the space occupied by the modal. --}}
@@ -93,8 +95,8 @@
                         @role("admin")
                             <div class="flex flex-col gap-4 w-[70vw] sm:w-[45vw]">
                                 <label>
-                                    Selecciona el departamento para poder ingresar el nombre y apellidos del profesor
-                                    <select class="w-[100%] bg-gray-900 border-gray-700 rounded-md p-2 py-3 py-3 mt-3">
+                                    <span class="text-sm text-gray-500">** Selecciona el departamento para poder ingresar el nombre y apellidos del profesor<span> <br>
+                                    <select class="text-gray-500 text-sm font-bold mt-2 border border-gray-300 rounded-md">
                                         <option>Seleccionar departamento</option>
                                         <option>Informática</option>
                                         <option>Idiomas</option>
@@ -102,48 +104,86 @@
                                     </select>
                                 </label>
 
-                                <div class="flex flex-col lg:flex-row gap-5 justify-center">
-                                    <label class="w-[70vw] sm:w-[100%] lg:w-[50%]">
-                                        Nombre del profesor<br>
-                                        <input type="text" class="w-full bg-gray-900 border-gray-700 rounded-md p-2 py-3 mt-3" disabled>
+                                {{-- <div class="flex flex-col lg:flex-row gap-5 justify-center"> --}}
+                                    <label class="w-full">
+                                        <span class="text-sm text-gray-500">Nombre del profesor<span> <br>
+                                        <input type="text" class="w-full bg-gray-900 border-gray-700 rounded-md p-2 py-3 mt-3 text-white" disabled>
                                     </label>
                                     
-                                    <label class="w-[70vw] sm:w-[100%] lg:w-[50%]">
-                                        Apellidos del profesor<br>
-                                        <input type="text" class="w-full bg-gray-900 border-gray-700 rounded-md p-2 py-3 mt-3" disabled>
+                                    <label class="w-full">
+                                        <span class="text-sm text-gray-500">Apellidos del profesor<span> <br>
+                                        <input type="text" class="w-full bg-gray-900 border-gray-700 rounded-md p-2 py-3 mt-3 text-white" disabled>
                                     </label>
-                                </div>
+                                {{-- </div> --}}
                             </div>
                         @endrole
 
+                        {{-- Schedule Date --}}
                         <label class="w-[70vw] sm:w-[45vw]">
-                            Especifica la fecha de la falta <br>
-                            <input type="date" class="w-full rounded-md p-2 py-3 mt-3 bg-gray-900 border-gray-700">
+                            <span class="text-sm text-gray-500">Especifica la fecha de la falta<span> <br>
+                            <select class="text-gray-500 text-sm font-bold mt-2 border border-gray-300 rounded-md">
+                                <option class="text-gray-500 text-sm font-bold mt-2">2025 - Semana: 20/01 al 24/01</option>
+                                <option class="text-gray-500 text-sm font-bold mt-2">2025 - Semana: 27/01 al 31/01</option>
+                                <option class="text-gray-500 text-sm font-bold mt-2">2025 - Semana: 03/02 al 07/01</option>
+                                <option class="text-gray-500 text-sm font-bold mt-2">2025 - Semana: 10/02 al 14/01</option>
+                            </select>
                         </label>
+                        
+                        {{-- Schedule --}}
+                        <div class="grid grid-cols-[12%_1fr_1fr_1fr_1fr_1fr] gap-2 p-4 text-center w-full sm:w-[60%]" id="calendar">
+                            <div class="text-sm">Hora</div>
+                            <div class="text-sm">Lun</div>
+                            <div class="text-sm">Mar</div>
+                            <div class="text-sm">Mié</div>
+                            <div class="text-sm">Jue</div>
+                            <div class="text-sm">Vie</div>
 
-                        <!-- Hours and comments -->
-                        @foreach ($morningSchedule as $hour)
-                            <div class="flex flex-col sm:p-4 text-center items-center gap-3 sm:mt-0">
-                                <div class="flex gap-4 sm:w-[70vw] lg:w-[45vw]">
-                                    <input type="checkbox" class="w-5 h-5 border-2 cursor-pointer rounded-md bg-gray-900">
-                                    <div class="flex justify-center">{{$hour[0]}} a {{$hour[1]}}</div>
+                            <!-- Rows and columns -->
+                            @foreach ($morningSchedule as $hour)
+                                <div class="text-sm p-4 flex justify-center items-center h-[8vh]">{{$hour[0]}} <br> {{$hour[1]}}</div>
+                                
+                                @foreach ($days as $day)
+                                    {{-- First param: hourNumber, Second param: dayNumber--}}
+                                    <div wire:click="toggleShowAddComment({{$loop->parent->index}}, {{$loop->index}})" class="border-2 rounded-lg flex justify-center sm:block bg-white cursor-pointer"></div>
+
+                                @endforeach
+                            @endforeach
+
+                            <!-- MODAL COMMENT START -->
+                            @if ($showComment)
+                                <div class="absolute inset-0 z-[10] grid place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300 ">
+                                    <div class="flex flex-col p-4 w-[80vw] h-[80vh] rounded-lg bg-gray-800 shadow-sm">
+                    
+                                        <!-- Modal body -->
+                                        <div class="flex w-full h-[75%] border-slate-200 py-4 leading-normal text-slate-600 font-light">
+                                            <textarea wire:model="comment" class="text-sm text-white w-full h-full bg-gray-900 border-gray-700 rounded-md" placeholder="Añade un comentario..."></textarea>
+                                        </div>
+                    
+                                        <!-- Modal buttons -->
+                                        <div class="flex items-center pt-4 justify-end">
+                                            <button wire:click="toggleShowAddComment" class="rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-sm text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                                                Cancelar
+                                            </button>
+                                            <button wire:click="addComment" class="rounded-md bg-white py-2 px-4 border border-transparent text-center text-sm text-black transition-all shadow-md hover:shadow-lg focus:bg-gray-300 focus:shadow-none active:bg-gray-300 hover:bg-gray-300 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                                                Guardar
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
-
-                                <!-- Create the add comment container -->
-                                <textarea class="hidden p-4 mt-4 bg-gray-900 w-[80vw] lg:w-[60vw] h-[25vh] rounded-lg border-gray-700"></textarea>
-                            </div>
-                        @endforeach                   
+                            @endif
+                            <!-- MODAL COMMENT END -->
+                        </div>
                     </div>
 
                     <!-- Modal buttons -->
                     <div class="flex shrink-0 flex-wrap items-center pt-4 justify-end">
                         <button wire:click="toggleShowAddAbsence" class="rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-white hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-700 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
-                            Cancel
+                            Cancelar
                         </button>
                         <button class="rounded-md bg-white py-2 px-4 border border-transparent text-center text-sm text-black transition-all shadow-md hover:shadow-lg focus:bg-gray-300 focus:shadow-none active:bg-gray-300 hover:bg-gray-300 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
                             Enviar
                         </button>
-                    </div>
+                    </div>   
                 </div>
             </div>
         @endif
