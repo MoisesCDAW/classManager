@@ -36,15 +36,6 @@
                             type="button">
                             Turno Tarde
                         </button>
-
-                        <a
-                            href="#app-blade"
-                            wire:click="toggleShowAddAbsence"
-                            class="h-10 flex select-none items-center gap-2 rounded bg-gray-800 py-2.5 px-4 text-xs font-semibold text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                            type="button">
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve" class="w-3 h-3" fill="#fff"><g><path d="M480,224H288V32c0-17.673-14.327-32-32-32s-32,14.327-32,32v192H32c-17.673,0-32,14.327-32,32s14.327,32,32,32h192v192   c0,17.673,14.327,32,32,32s32-14.327,32-32V288h192c17.673,0,32-14.327,32-32S497.673,224,480,224z"/></g></svg>
-                            Agregar Ausencia
-                        </a>
                     </div>
                 </div>
 
@@ -62,129 +53,114 @@
                         <div class="text-sm p-4 flex justify-center items-center h-[8vh]">{{$hour[0]}} <br> {{$hour[1]}}</div>
                         
                         @foreach ($days as $day)
-                            <div class="border-2 rounded-lg flex justify-center sm:block" style="background-color: {{$hour[3]}}">
+                            <a href="#app-blade" wire:click="chooseAction({{$loop->parent->index}}, {{$loop->index}})" class="border-2 rounded-lg flex justify-center sm:block cursor-pointer" style="background-color: {{$hour[3]}}">
 
                                 {{-- First param: hourNumber, Second param: dayNumber--}}
                                 @if ($this->printAbsences($loop->parent->index, $loop->index))
 
                                     {{-- A link was applied at the top of the page (layout: app-blade) to control that no content is displayed outside the space occupied by the modal. --}}
-                                    <a href="#app-blade" wire:click="toggleShowAllAbsences({{$loop->parent->index}}, {{$loop->index}})" class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center text-gray-500 cursor-pointer" style="background-color: {{$hour[2]}}">{{ $this->absencesTotalForDay }}</a>
+                                    <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center text-gray-500" style="background-color: {{$hour[2]}}">{{ $this->absencesTotalForDay }}</div>
                                 @endif
 
-                            </div>
+                            </a>
                         @endforeach
                     @endforeach
                 </div>
             </div>
         </div>
 
-        <!-- MODAL ADD START -->
-        @if ($viewAddAbsence)
-            <div class="text-gray-300 absolute inset-0 z-[20] grid h-screen w-full place-items-center bg-gray-900 bg-opacity-90 backdrop-blur-sm transition-opacity duration-300">
-                <div class="relative m-4 p-4 w-[90vw] h-[90vh] rounded-lg bg-gray-800 shadow-sm">
-
-                    <!-- Modal header -->
-                    <div class="flex shrink-0 items-center justify-between pb-4 font-medium text-slate-800">
-                        <p class="text-lg">Añadir ausencia</p>
-                    </div>
-
-                    <!-- Modal comments -->
-                    <div class="flex flex-col gap-10 h-[70vh] sm:h-[55vh] lg:h-[70vh] w-full overflow-y-scroll pb-10 items-center">
-
-                        <!-- Vista Admin -->
-                        @role("admin")
-                            <div class="flex flex-col gap-4 w-[70vw] sm:w-[45vw]">
-                                <label>
-                                    <span class="text-sm text-gray-500">** Selecciona el departamento para poder ingresar el nombre y apellidos del profesor<span> <br>
-                                    <select class="text-gray-500 text-sm font-bold mt-2 border border-gray-300 rounded-md">
-                                        <option>Seleccionar departamento</option>
-                                        <option>Informática</option>
-                                        <option>Idiomas</option>
-                                        <option>Ciencias</option>
-                                    </select>
-                                </label>
-
-                                {{-- <div class="flex flex-col lg:flex-row gap-5 justify-center"> --}}
-                                    <label class="w-full">
-                                        <span class="text-sm text-gray-500">Nombre del profesor<span> <br>
-                                        <input type="text" class="w-full bg-gray-900 border-gray-700 rounded-md p-2 py-3 mt-3 text-white" disabled>
-                                    </label>
-                                    
-                                    <label class="w-full">
-                                        <span class="text-sm text-gray-500">Apellidos del profesor<span> <br>
-                                        <input type="text" class="w-full bg-gray-900 border-gray-700 rounded-md p-2 py-3 mt-3 text-white" disabled>
-                                    </label>
-                                {{-- </div> --}}
-                            </div>
-                        @endrole
-
-                        {{-- Schedule Date --}}
-                        <label class="w-[70vw] sm:w-[45vw]">
-                            <span class="text-sm text-gray-500">Especifica la fecha de la falta<span> <br>
-                            <select class="text-gray-500 text-sm font-bold mt-2 border border-gray-300 rounded-md">
-                                <option class="text-gray-500 text-sm font-bold mt-2">2025 - Semana: 20/01 al 24/01</option>
-                                <option class="text-gray-500 text-sm font-bold mt-2">2025 - Semana: 27/01 al 31/01</option>
-                                <option class="text-gray-500 text-sm font-bold mt-2">2025 - Semana: 03/02 al 07/01</option>
-                                <option class="text-gray-500 text-sm font-bold mt-2">2025 - Semana: 10/02 al 14/01</option>
-                            </select>
-                        </label>
+        
+        <!-- MODAL CHOOSE ACTION START -->
+        @if ($viewChooseAction)
+            <div class="absolute inset-0 z-[10] grid place-items-center bg-black bg-opacity-10 backdrop-blur-sm transition-opacity duration-300">
+                
+                <!-- Modal body -->
+                <div class="flex flex-col p-4 w-[80vw] h-[25vh] sm:w-[50vw] sm:h-[45vh] lg:w-[25vw] lg:h-[25vh] rounded-lg bg-gray-800 shadow-sm justify-center gap-4">
+                    <div class="flex flex-col gap-2 w-full justify-center">
+                        <button wire:click="toggleShowAddAbsence" class="rounded-md bg-white py-2 px-4 border border-transparent text-center text-sm text-black transition-all shadow-md hover:shadow-lg focus:bg-gray-300 focus:shadow-none active:bg-gray-300 hover:bg-gray-300 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                            Crear Ausencia
+                        </button>
                         
-                        {{-- Schedule --}}
-                        <div class="grid grid-cols-[12%_1fr_1fr_1fr_1fr_1fr] gap-2 p-4 text-center w-full sm:w-[60%]" id="calendar">
-                            <div class="text-sm">Hora</div>
-                            <div class="text-sm">Lun</div>
-                            <div class="text-sm">Mar</div>
-                            <div class="text-sm">Mié</div>
-                            <div class="text-sm">Jue</div>
-                            <div class="text-sm">Vie</div>
-
-                            <!-- Rows and columns -->
-                            @foreach ($morningSchedule as $hour)
-                                <div class="text-sm p-4 flex justify-center items-center h-[8vh]">{{$hour[0]}} <br> {{$hour[1]}}</div>
-                                
-                                @foreach ($days as $day)
-                                    {{-- First param: hourNumber, Second param: dayNumber--}}
-                                    <div wire:click="toggleShowAddComment({{$loop->parent->index}}, {{$loop->index}})" class="border-2 rounded-lg flex justify-center sm:block bg-white cursor-pointer"></div>
-
-                                @endforeach
-                            @endforeach
-
-                            <!-- MODAL COMMENT START -->
-                            @if ($showComment)
-                                <div class="absolute inset-0 z-[10] grid place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300 ">
-                                    <div class="flex flex-col p-4 w-[80vw] h-[80vh] rounded-lg bg-gray-800 shadow-sm">
-                    
-                                        <!-- Modal body -->
-                                        <div class="flex w-full h-[75%] border-slate-200 py-4 leading-normal text-slate-600 font-light">
-                                            <textarea wire:model="comment" class="text-sm text-white w-full h-full bg-gray-900 border-gray-700 rounded-md" placeholder="Añade un comentario..."></textarea>
-                                        </div>
-                    
-                                        <!-- Modal buttons -->
-                                        <div class="flex items-center pt-4 justify-end">
-                                            <button wire:click="toggleShowAddComment" class="rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-sm text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
-                                                Cancelar
-                                            </button>
-                                            <button wire:click="addComment" class="rounded-md bg-white py-2 px-4 border border-transparent text-center text-sm text-black transition-all shadow-md hover:shadow-lg focus:bg-gray-300 focus:shadow-none active:bg-gray-300 hover:bg-gray-300 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
-                                                Guardar
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
-                            <!-- MODAL COMMENT END -->
-                        </div>
+                        <button wire:click="toggleShowAllAbsences" class="rounded-md bg-[#CCCCFF] py-2 px-4 border border-transparent text-center text-sm text-black transition-all shadow-md hover:shadow-lg focus:bg-white focus:shadow-none active:bg-white hover:bg-white active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                            Ver todas las ausencias
+                        </button>
                     </div>
-
-                    <!-- Modal buttons -->
-                    <div class="flex shrink-0 flex-wrap items-center pt-4 justify-end">
-                        <button wire:click="toggleShowAddAbsence" class="rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-white hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-700 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
+                    
+                    <div class="flex justify-center">
+                        <button wire:click="chooseAction" class="rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-sm text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
                             Cancelar
                         </button>
-                        <button class="rounded-md bg-white py-2 px-4 border border-transparent text-center text-sm text-black transition-all shadow-md hover:shadow-lg focus:bg-gray-300 focus:shadow-none active:bg-gray-300 hover:bg-gray-300 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
-                            Enviar
-                        </button>
-                    </div>   
+                    </div>
                 </div>
+            </div>
+        @endif
+        <!-- MODAL CHOOSE ACTION END -->
+
+
+        <!-- MODAL ADD START -->
+        @if ($viewAddAbsence)
+            <div class="absolute inset-0 z-[10] grid place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300 ">
+                
+                <!-- Modal body -->
+                @role("admin")
+                    <div class="flex flex-col p-4 w-[90vw] h-[90vh] rounded-lg bg-gray-800 shadow-sm ">
+                        <div class="flex flex-col gap-4 w-full overflow-y-scroll lg:overflow-y-hidden">
+                            <label>
+                                <span class="text-sm text-gray-500">** Selecciona el departamento para poder ingresar el nombre y apellidos del profesor<span> <br>
+                                <select class="text-gray-500 text-sm font-bold mt-2 border border-gray-300 rounded-md">
+                                    <option>Seleccionar departamento</option>
+                                    <option>Informática</option>
+                                    <option>Idiomas</option>
+                                    <option>Ciencias</option>
+                                </select>
+                            </label>
+
+                            <div class="flex gap-4 flex-col sm:flex-row">
+                                <label class="w-full lg:w-[25vw]">
+                                    <span class="text-sm text-gray-500">Nombre del profesor<span> <br>
+                                    <input type="text" class="w-full bg-gray-900 border-gray-700 rounded-md p-2 mt-3 text-white">
+                                </label>
+                                
+                                <label class="w-full lg:w-[25vw]">
+                                    <span class="text-sm text-gray-500">Apellidos del profesor<span> <br>
+                                    <input type="text" class="w-full bg-gray-900 border-gray-700 rounded-md p-2 mt-3 text-white" disabled>
+                                </label>
+                            </div>
+
+                            {{-- Comment --}}
+                            <textarea wire:model="comment" class="text-sm text-white w-full min-h-[35vh] sm:min-h-[60vh] lg:min-h-[40vh] bg-gray-900 border-gray-700 rounded-md" placeholder="Añade un comentario para crear la ausencia..."></textarea>
+                        </div> 
+
+                        
+                        <!-- Modal buttons -->
+                        <div class="flex items-center pt-4 justify-end">
+                            <button wire:click="toggleShowAddAbsence" class="rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-sm text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                                Cancelar
+                            </button>
+                            <button class="rounded-md bg-white py-2 px-4 border border-transparent text-center text-sm text-black transition-all shadow-md hover:shadow-lg focus:bg-gray-300 focus:shadow-none active:bg-gray-300 hover:bg-gray-300 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                                Editar
+                            </button>
+                        </div>
+                    </div> 
+                @else
+                    <div class="flex flex-col p-4 w-[90vw] h-[70vh] rounded-lg bg-gray-800 shadow-sm ">
+                        <div class="flex flex-col gap-4 w-full overflow-y-scroll md:overflow-y-hidden">
+                            {{-- Comment --}}
+                            <textarea wire:model="comment" class="text-sm text-white w-full min-h-[50vh] sm:min-h-[70vh] lg:min-h-[50vh] bg-gray-900 border-gray-700 rounded-md" placeholder="Añade un comentario para crear la ausencia..."></textarea>
+                        </div>  
+                    
+
+                        <!-- Modal buttons -->
+                        <div class="flex items-center pt-4 justify-end">
+                            <button wire:click="toggleShowAddAbsence" class="rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-sm text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                                Cancelar
+                            </button>
+                            <button class="rounded-md bg-white py-2 px-4 border border-transparent text-center text-sm text-black transition-all shadow-md hover:shadow-lg focus:bg-gray-300 focus:shadow-none active:bg-gray-300 hover:bg-gray-300 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                                Editar
+                            </button>
+                        </div>
+                    </div>
+                @endrole
             </div>
         @endif
         <!-- MODAL ADD END -->
@@ -269,12 +245,14 @@
         <!-- MODAL EDIT START -->
         @if ($viewEditAbsence)
             <div class="absolute inset-0 z-[10] grid place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300 ">
-                <div class="flex flex-col p-4 w-[80vw] h-[80vh] rounded-lg bg-gray-800 shadow-sm">
-
-                    <!-- Modal body -->
-                    <div class="flex w-full h-[75%] border-slate-200 py-4 leading-normal text-slate-600 font-light">
-                        <textarea wire:model="comment" class="text-sm text-white w-full h-full bg-gray-900 border-gray-700 rounded-md" placeholder="Añade un comentario...">{{$this->commentEdit}}</textarea>
-                    </div>
+                
+                <!-- Modal body -->
+                <div class="flex flex-col p-4 w-[90vw] h-[70vh] rounded-lg bg-gray-800 shadow-sm ">
+                    <div class="flex flex-col gap-4 w-full overflow-y-scroll md:overflow-y-hidden">
+                        {{-- Comment --}}
+                        <textarea wire:model="comment" class="text-sm text-white w-full min-h-[50vh] sm:min-h-[70vh] lg:min-h-[50vh] bg-gray-900 border-gray-700 rounded-md" placeholder="Añade un comentario...">{{$this->commentEdit}}</textarea>
+                    </div>  
+                
 
                     <!-- Modal buttons -->
                     <div class="flex items-center pt-4 justify-end">

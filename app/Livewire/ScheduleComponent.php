@@ -58,6 +58,11 @@ class ScheduleComponent extends Component
     public $viewEditAbsence = false;
 
     /**
+     * True to show the choose action buttons.
+     */
+    public $viewChooseAction = false;
+
+    /**
      * Comment that is being edited when opening the "EditComment" modal
      */
     public $commentEdit = null;
@@ -85,8 +90,13 @@ class ScheduleComponent extends Component
      */
     public $timeToEdit = false;
 
+    /**
+     * Data to Add model
+     */
+    public $commentAdd = '';
     public $comments = [];
     public $showComment = false;
+    public $checkDayBg = "#FFF";
 
     /**
      * Render the component
@@ -165,14 +175,21 @@ class ScheduleComponent extends Component
     }
 
 
+    public function chooseAction($hourNumber=null, $dayNumber=null){
+        $this->hourNumber = $hourNumber;
+        $this->dayNumber = $dayNumber;
+        $this->viewChooseAction = !$this->viewChooseAction;
+        $this->toggleScroll();
+    }
+
+
     /**
      * Toggle the view of all absences
      */
-    function toggleShowAllAbsences($hourNumber=null, $dayNumber=null){
+    function toggleShowAllAbsences(){
+        $this->viewChooseAction = false;
         $this->viewAllAbsences = !$this->viewAllAbsences;
         $this->toggleScroll();
-        $this->hourNumber = $hourNumber;
-        $this->dayNumber = $dayNumber;
         $this->getAbsencesForDayAndHour();
     }
 
@@ -181,6 +198,7 @@ class ScheduleComponent extends Component
      * Toggle the view of the add absence form
      */
     function toggleShowAddAbsence(){
+        $this->viewChooseAction = false;
         $this->viewAddAbsence = !$this->viewAddAbsence;
         $this->toggleScroll();
     } 
@@ -192,7 +210,6 @@ class ScheduleComponent extends Component
     function toggleShowEditAbsence($comment=null){
         $this->commentEdit = $comment;
         $this->viewEditAbsence = !$this->viewEditAbsence;
-        $this->toggleScroll();
     }  
 
     /**
@@ -233,11 +250,26 @@ class ScheduleComponent extends Component
     }
 
 
+    function searchComment($idHour, $idDay){
+        $dayChecked = false;
+        foreach ($this->comments as $c) {
+            if ($c['idHour'] == $idHour && $c['idDay'] == $idDay) {
+                $dayChecked = true;
+                break;
+            }
+        }
+
+        return $dayChecked;
+    }
+
     /**
      * Add an absence
      */
-    function addComment($idHour, $idDay) {
-        
+    function addComment() {
+        array_push($this->comments, ['idHour' => $this->hourNumber, 'idDay' => $this->dayNumber, 'comment' => $this->commentAdd]);
+        $this->checkDayBg = "#DDD";
+        $this->showComment = !$this->showComment;
+        // dd($this->comments);
     }
 
     /**
@@ -245,7 +277,9 @@ class ScheduleComponent extends Component
      */
     function toggleShowAddComment($idHour = null, $idDay = null){
         $this->showComment = !$this->showComment;
-        $this->addComment($idHour, $idDay);
+        $this->hourNumber = $idHour;
+        $this->dayNumber = $idDay;
+        $this->checkDayBg = "#FFF";
     }
 
 
