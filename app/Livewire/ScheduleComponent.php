@@ -187,9 +187,7 @@ class ScheduleComponent extends Component
      * Toggle the view of all absences
      */
     function toggleShowAllAbsences(){
-        $this->viewChooseAction = false;
         $this->viewAllAbsences = !$this->viewAllAbsences;
-        $this->toggleScroll();
         $this->getAbsencesForDayAndHour();
     }
 
@@ -198,9 +196,7 @@ class ScheduleComponent extends Component
      * Toggle the view of the add absence form
      */
     function toggleShowAddAbsence(){
-        $this->viewChooseAction = false;
         $this->viewAddAbsence = !$this->viewAddAbsence;
-        $this->toggleScroll();
     } 
     
     
