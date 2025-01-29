@@ -230,7 +230,7 @@
                                     @if(auth()->user()->hasRole('admin') || $this->checkTimeToEdit($absencesForDayAndHour[$loop->index]))
                                         <div class="flex gap-4">
                                             {{-- Edit button --}}
-                                            <button wire:click="toggleShowEditAbsence" class="p-1 text-gray-500 transition-colors rounded hover:bg-gray-100 focus:outline-none">
+                                            <button wire:click="toggleShowEditAbsence(@js($absencesForDayAndHour[$loop->index]->comment))" class="p-1 text-gray-500 transition-colors rounded hover:bg-gray-100 focus:outline-none">
                                                 <svg xmlns="http://www.w3.org/2000/svg" id="Filled" viewBox="0 0 24 24" width="16" height="16" fill="#000"><path d="M1.172,19.119A4,4,0,0,0,0,21.947V24H2.053a4,4,0,0,0,2.828-1.172L18.224,9.485,14.515,5.776Z"/><path d="M23.145.855a2.622,2.622,0,0,0-3.71,0L15.929,4.362l3.709,3.709,3.507-3.506A2.622,2.622,0,0,0,23.145.855Z"/></svg>
                                             </button>
                                             
@@ -268,22 +268,21 @@
 
         <!-- MODAL EDIT START -->
         @if ($viewEditAbsence)
-            <div class="absolute inset-0 z-[20] grid h-screen w-full place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300">
-                <div class="relative m-4 p-4 w-[90vw] h-[90vh] rounded-lg bg-white shadow-sm">
+            <div class="absolute inset-0 z-[10] grid place-items-center bg-black bg-opacity-60 backdrop-blur-sm transition-opacity duration-300 ">
+                <div class="flex flex-col p-4 w-[80vw] h-[80vh] rounded-lg bg-gray-800 shadow-sm">
 
-                    <!-- Create the editor container -->
-                    <div id="edit" class="max-h-[58vh] sm:!text-lg">
-                        <textarea class="p-2 mt-4 text-gray-600 w-full h-full"></textarea>
+                    <!-- Modal body -->
+                    <div class="flex w-full h-[75%] border-slate-200 py-4 leading-normal text-slate-600 font-light">
+                        <textarea wire:model="comment" class="text-sm text-white w-full h-full bg-gray-900 border-gray-700 rounded-md" placeholder="Añade un comentario...">{{$this->commentEdit}}</textarea>
                     </div>
 
                     <!-- Modal buttons -->
-                    <div class="flex shrink-0 flex-wrap items-center pt-4 justify-end">
-                        <button wire:click="toggleShowEditAbsence" class="rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-slate-600 hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
-                            Cancel
+                    <div class="flex items-center pt-4 justify-end">
+                        <button wire:click="toggleShowEditAbsence" class="rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-sm text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                            Cancelar
                         </button>
-
-                        <button class="rounded-md bg-gray-600 py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
-                            Edit
+                        <button class="rounded-md bg-white py-2 px-4 border border-transparent text-center text-sm text-black transition-all shadow-md hover:shadow-lg focus:bg-gray-300 focus:shadow-none active:bg-gray-300 hover:bg-gray-300 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                            Editar
                         </button>
                     </div>
                 </div>

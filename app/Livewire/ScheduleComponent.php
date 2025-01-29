@@ -58,6 +58,11 @@ class ScheduleComponent extends Component
     public $viewEditAbsence = false;
 
     /**
+     * Comment that is being edited when opening the "EditComment" modal
+     */
+    public $commentEdit = null;
+
+    /**
      * The hour number and day number of the absence
      */
     public $hourNumber = null;
@@ -184,7 +189,8 @@ class ScheduleComponent extends Component
     /**
      * Toggle the view of the add absence form
      */
-    function toggleShowEditAbsence(){
+    function toggleShowEditAbsence($comment=null){
+        $this->commentEdit = $comment;
         $this->viewEditAbsence = !$this->viewEditAbsence;
         $this->toggleScroll();
     }  
