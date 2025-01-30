@@ -216,12 +216,12 @@
                                     @if(auth()->user()->hasRole('admin') || $this->checkTimeToEdit($absencesForDayAndHour[$loop->index]))
                                         <div class="flex gap-4">
                                             {{-- Edit button --}}
-                                            <button wire:click="toggleShowEditAbsence(@js($absencesForDayAndHour[$loop->index]->comment))" class="p-1 text-gray-500 transition-colors rounded hover:bg-gray-100 focus:outline-none">
+                                            <button wire:click="toggleShowEditAbsence(@js($absencesForDayAndHour[$loop->index]), @js($professor[0]))" class="p-1 text-gray-500 transition-colors rounded hover:bg-gray-100 focus:outline-none">
                                                 <svg xmlns="http://www.w3.org/2000/svg" id="Filled" viewBox="0 0 24 24" width="16" height="16" fill="#000"><path d="M1.172,19.119A4,4,0,0,0,0,21.947V24H2.053a4,4,0,0,0,2.828-1.172L18.224,9.485,14.515,5.776Z"/><path d="M23.145.855a2.622,2.622,0,0,0-3.71,0L15.929,4.362l3.709,3.709,3.507-3.506A2.622,2.622,0,0,0,23.145.855Z"/></svg>
                                             </button>
                                             
                                             {{-- Delete button --}}
-                                            <button class="p-1 text-gray-500 transition-colors rounded hover:bg-gray-100 focus:outline-none">
+                                            <button wire:click="deleteAbsence(@js($absencesForDayAndHour[$loop->index]))" wire:confirm="¿Eliminar Ausencia?" class="p-1 text-gray-500 transition-colors rounded hover:bg-gray-100 focus:outline-none">
                                                 <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" width="16" height="16" viewBox="0 0 24 24" fill="#000"><path d="m22,4h-4.101c-.465-2.279-2.484-4-4.899-4h-2c-2.414,0-4.434,1.721-4.899,4H2c-.552,0-1,.447-1,1s.448,1,1,1h.86l1.296,13.479c.248,2.578,2.388,4.521,4.977,4.521h5.727c2.593,0,4.733-1.947,4.978-4.528l1.276-13.472h.885c.552,0,1-.447,1-1s-.448-1-1-1Zm-11-2h2c1.302,0,2.402.839,2.816,2h-7.631c.414-1.161,1.514-2,2.816-2Zm4.707,14.293c.391.391.391,1.023,0,1.414-.195.195-.451.293-.707.293s-.512-.098-.707-.293l-2.293-2.293-2.293,2.293c-.195.195-.451.293-.707.293s-.512-.098-.707-.293c-.391-.391-.391-1.023,0-1.414l2.293-2.293-2.293-2.293c-.391-.391-.391-1.023,0-1.414s1.023-.391,1.414,0l2.293,2.293,2.293-2.293c.391-.391,1.023-.391,1.414,0s.391,1.023,0,1.414l-2.293,2.293,2.293,2.293Z"/></svg>
                                             </button>
                                         </div>
@@ -260,7 +260,8 @@
                 <div class="flex flex-col p-4 w-[90vw] h-[70vh] rounded-lg bg-gray-800 shadow-sm ">
                     <div class="flex flex-col gap-4 w-full overflow-y-scroll md:overflow-y-hidden">
                         {{-- Comment --}}
-                        <textarea wire:model="comment" class="text-sm text-white w-full min-h-[50vh] sm:min-h-[70vh] lg:min-h-[50vh] bg-gray-900 border-gray-700 rounded-md" placeholder="Añade un comentario...">{{$this->commentEdit}}</textarea>
+                        <textarea wire:model="commentEdit" class="text-sm text-white w-full min-h-[50vh] sm:min-h-[70vh] lg:min-h-[50vh] bg-gray-900 border-gray-700 rounded-md" placeholder="Añade un comentario...">{{$this->commentEdit}}</textarea>
+                        @error('commentEdit') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     </div>  
                 
 
@@ -269,7 +270,7 @@
                         <button wire:click="toggleShowEditAbsence" class="rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-sm text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
                             Cancelar
                         </button>
-                        <button class="rounded-md bg-white py-2 px-4 border border-transparent text-center text-sm text-black transition-all shadow-md hover:shadow-lg focus:bg-gray-300 focus:shadow-none active:bg-gray-300 hover:bg-gray-300 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                        <button wire:click="editAbsence" class="rounded-md bg-white py-2 px-4 border border-transparent text-center text-sm text-black transition-all shadow-md hover:shadow-lg focus:bg-gray-300 focus:shadow-none active:bg-gray-300 hover:bg-gray-300 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
                             Editar
                         </button>
                     </div>

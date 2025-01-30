@@ -65,11 +65,6 @@ class ScheduleComponent extends Component
     public $viewChooseAction = false;
 
     /**
-     * Comment that is being edited when opening the "EditComment" modal
-     */
-    public $commentEdit = null;
-
-    /**
      * The hour number and day number of the absence
      */
     public $hourNumber = null;
@@ -101,6 +96,12 @@ class ScheduleComponent extends Component
     public $professorName = null;
     public $professorSurnames = null;
 
+    /**
+     * Data to Edit model
+     */
+    public $professorEdit = null;
+    public $commentEdit = null;
+    public $absenceEditID = null;
 
 
     /**
@@ -247,8 +248,13 @@ class ScheduleComponent extends Component
     /**
      * Toggle the view of the add absence form
      */
-    function toggleShowEditAbsence($comment=null){
-        $this->commentEdit = $comment;
+    function toggleShowEditAbsence($absence=null, $user=null){
+
+        if ($absence && $user) {  
+            $this->commentEdit = $absence["comment"];
+            $this->professorEdit = $user;
+            $this->absenceEditID = $absence["id"];
+        }
         $this->viewEditAbsence = !$this->viewEditAbsence;
     }  
 
@@ -310,11 +316,11 @@ class ScheduleComponent extends Component
             'professorDepartment' => 'required|exists:departments,id',
             'professorName' => 'required|regex:/^[A-Za-záéíóúÁÉÍÓÚ\s]+$/|max:255', 
             'professorSurnames' => 'required|regex:/^[A-Za-záéíóúÁÉÍÓÚ\s]+$/|max:255',
-            'commentAbsence' => 'required|regex:/^[A-Za-z0-9áéíóúÁÉÍÓÚ\s]+$/|min:10|max:500'
+            'commentAbsence' => 'required|regex:/^[A-Za-z0-9áéíóúÁÉÍÓÚ\s\.\,\(\)\?\¿\!\¡]+$/|min:10|max:500'
         ];
 
         $professor = [
-            'commentAbsence' => 'required|regex:/^[A-Za-z0-9áéíóúÁÉÍÓÚ\s]+$/|min:10|max:500'
+            'commentAbsence' => 'required|regex:/^[A-Za-z0-9áéíóúÁÉÍÓÚ\s\.\,\(\)\?\¿\!\¡]+$/|min:10|max:500'
         ];
 
 
@@ -370,7 +376,29 @@ class ScheduleComponent extends Component
      * Edit an absence
      */
     function editAbsence(){
-        
+        $this->validate([
+            'commentEdit' => 'required|regex:/^[A-Za-z0-9áéíóúÁÉÍÓÚ\s\.\,\(\)\?\¿\!\¡]+$/|min:10|max:500'
+        ]);
+
+        DB::table('absences')
+            ->where('id', $this->absenceEditID)
+            ->update(['comment' => $this->commentEdit]);
+
+        $this->toggleShowEditAbsence(true);
+        $this->getAbsencesForDayAndHour();
+    }
+
+
+    /**
+     * Delete ab absence
+     */
+    function deleteAbsence($absenceID){
+        DB::table('absences')
+            ->where('id', $absenceID)
+            ->delete();
+
+        $this->toggleShowAllAbsences(true);
+        $this->getAllAbsencesAsec();
     }
 
 
