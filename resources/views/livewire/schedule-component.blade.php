@@ -14,10 +14,9 @@
                                 <h3 class="font-semibold text-gray-800">Registro de Ausencias</h3>
                                 <p class="text-gray-500 text-sm">Detalles de inasistencias para cada día en cada hora.</p>
                                 <select class="text-gray-500 text-sm font-bold mt-2 border border-gray-300 rounded-md">
-                                    <option class="text-gray-500 text-sm font-bold mt-2">2025 - Semana: 20/01 al 24/01</option>
-                                    <option class="text-gray-500 text-sm font-bold mt-2">2025 - Semana: 27/01 al 31/01</option>
-                                    <option class="text-gray-500 text-sm font-bold mt-2">2025 - Semana: 03/02 al 07/01</option>
-                                    <option class="text-gray-500 text-sm font-bold mt-2">2025 - Semana: 10/02 al 14/01</option>
+                                    @foreach ($weeks as $week)
+                                        <option class="text-gray-500 text-sm font-bold mt-2">{{$currentYear}} - Semana: {{$week[0]}} al {{$week[1]}}</option>               
+                                    @endforeach
                                 </select>
                             </div>
                         </div>

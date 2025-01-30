@@ -65,6 +65,13 @@ class ScheduleComponent extends Component
     public $viewChooseAction = false;
 
     /**
+     * Data to show weeks in the schedule dropdown
+     */
+    public $currentYear = null;
+    public $weeks = [];
+    public $maxWeeks = 4;
+
+    /**
      * The hour number and day number of the absence
      */
     public $hourNumber = null;
@@ -410,11 +417,49 @@ class ScheduleComponent extends Component
         $this->getDepartments();
     }
 
+    /**
+     * Get the current dates corresponding to each week. Only a range of up to 4 weeks is calculated.
+     */
+    function getDateSchedule(){
+        $startDate = date_create();
+        $endDate = null;
+        $this->currentYear = date_format($startDate, 'Y');
+
+        /* We calculate how many days need to be subtracted from the current day to make it Monday, 
+        so we can determine the start date of the current week. */
+        $currentNumberDay = date_format(date_create(), 'N');
+        $dayCounter = 0;
+        for ($i=$currentNumberDay; $i > 0 ; $i--) { 
+            if ($i!=1) {
+                $dayCounter++;
+            }
+        }
+
+        // Get Start of current week
+        date_modify($startDate, "-$dayCounter day");
+        $endDate = clone $startDate;
+        date_modify($endDate, "+4 day");
+
+        // The first week is saved
+        array_push($this->weeks, [date_format($startDate, 'd/m'), date_format($endDate, 'd/m')]);
+        
+        // The remaining weeks are obtained to complete the maximum number of weeks
+        for ($i=$this->maxWeeks-1; $i > 0; $i--) { 
+            date_modify($startDate, "+7 day");
+            $endDate = clone $startDate;
+            date_modify($endDate, "+4 day");
+    
+            array_push($this->weeks, [date_format($startDate, 'd/m'), date_format($endDate, 'd/m')]);
+        }
+    }
+
+
 
     /**
      * Mount the component
      */
     function mount(){
+        $this->getDateSchedule();
         $this->getAllAbsencesAsec();
         $this->getDepartments();
     }
