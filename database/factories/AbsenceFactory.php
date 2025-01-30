@@ -51,6 +51,7 @@ class AbsenceFactory extends Factory
             'endHour' => $hours[$hour+1],
             'hourNumber' => $hour,
             'dayNumber' => fake()->numberBetween(0, count($days)-1),
+            'week' => fake()->numberBetween(0, 3),
         ];
     }
 }

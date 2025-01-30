@@ -33,6 +33,7 @@ class ScheduleComponent extends Component
      */
     public $days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
 
+    public $weekNumber = 0;
 
     /**
      * All absences of the school
@@ -92,7 +93,7 @@ class ScheduleComponent extends Component
     /**
      * It allows controlling the time during which a non-admin user can edit or delete an absence. This applies only to the absences created by the user.
      */
-    public $timeToEdit = false;
+    public $timeToEdit = 10;
 
     /**
      * Data to Add model
@@ -120,6 +121,11 @@ class ScheduleComponent extends Component
     }
 
 
+    function changeWeek(){
+
+    }
+
+
     /**
      * Get all absences ordered by hour number ascending
      */	
@@ -143,7 +149,7 @@ class ScheduleComponent extends Component
         $this->absencesTotalForDay = 0;
 
         foreach ($this->absences as $absence) {
-            if (($absence->hourNumber==$hourNumber) && ($absence->dayNumber==$dayNumber)) {
+            if (($absence->hourNumber==$hourNumber) && ($absence->dayNumber==$dayNumber) && ($absence->week==$this->weekNumber)) {
                 $this->absencesTotalForDay++;
             }
         }
@@ -183,12 +189,7 @@ class ScheduleComponent extends Component
 
     public function morningSchedule(){
         
-        $this->js("
-            const element = document.querySelector('#morning-shift');
-            element.classList.toggle('outline');
-            element.classList.toggle('outline-3');
-            element.classList.toggle('outline-gray-600');
-        ");
+        // ...
     }
 
 
@@ -285,25 +286,29 @@ class ScheduleComponent extends Component
     
 
     /**
-     * Check if the time to edit the absence has passed
+     * This function compares the current time with the time the absence was created 
+     * to determine if the user is still within the allowed time frame to edit the absence.
      */
     function checkTimeToEdit($absence){
-        $onTime = false;
-        $currentTime = date_create();
-        $absenceTime = date_create($absence->created_at);
-        $timeToEdit = 10; // 10 minutes
-        $interval = $currentTime->diff($absenceTime);
+        $onTime = false; // Initialize the variable to track if the time to edit has passed
 
+        $currentTime = date_create(); // Get the current date and time
+        $absenceTime = date_create($absence->created_at); // Create a DateTime object from the absence's creation timestamp
+        $interval = $currentTime->diff($absenceTime); // Calculate the interval between the current time and the absence creation time
+
+        // Extract the number of days, hours, and minutes from the interval
         $days = $interval->format("%a");
         $hours = $interval->format("%R%h");
         $minutes = $interval->format("%i");
 
-        if ($days == 0 && $hours == 0 && $minutes <= $timeToEdit) {
-            $onTime = true;
+        // Check if the absence was created today and if the time to edit (in minutes) is still within the allowed limit
+        if ($days == 0 && $hours == 0 && $minutes <= $this->timeToEdit) {
+            $onTime = true; // The time to edit the absence is still valid
         }
 
         return $onTime;
     }
+
 
 
     /**
@@ -319,6 +324,7 @@ class ScheduleComponent extends Component
      */
     function addAbsence() {
 
+        // Validations that will be applied depending on the type of form to be used. The form type depends on the session user's role
         $admin = [
             'professorDepartment' => 'required|exists:departments,id',
             'professorName' => 'required|regex:/^[A-Za-záéíóúÁÉÍÓÚ\s]+$/|max:255', 
@@ -331,6 +337,9 @@ class ScheduleComponent extends Component
         ];
 
 
+        /** 
+         * ADMIN
+         */
         if (auth()->user()->hasRole('admin')) {
 
             $this->validate($admin);
@@ -348,11 +357,12 @@ class ScheduleComponent extends Component
                     'startHour' => $this->morningSchedule[$this->hourNumber][0],
                     'endHour' => $this->morningSchedule[$this->hourNumber][1],
                     'hourNumber' => $this->hourNumber,
-                    'dayNumber' => $this->dayNumber
+                    'dayNumber' => $this->dayNumber,
+                    'week' => $this->weekNumber,
                 ]);
 
             $this->toggleShowAddAbsence(true);
-            $this->renderAbsences();
+            $this->getAllAbsencesAsec();
 
             }else{
                 // ...
@@ -360,7 +370,9 @@ class ScheduleComponent extends Component
 
         }
         
-
+        /** 
+         * PROFESSORS
+         */
         if (auth()->user()->hasRole('professor')){
             $this->validate($professor);
 
@@ -370,11 +382,12 @@ class ScheduleComponent extends Component
                 'startHour' => $this->morningSchedule[$this->hourNumber][0],
                 'endHour' => $this->morningSchedule[$this->hourNumber][1],
                 'hourNumber' => $this->hourNumber,
-                'dayNumber' => $this->dayNumber
+                'dayNumber' => $this->dayNumber,
+                'week' => $this->weekNumber,
             ]);
 
             $this->toggleShowAddAbsence(true);
-            $this->renderAbsences();
+            $this->getAllAbsencesAsec();
         }
     }
 
@@ -408,14 +421,6 @@ class ScheduleComponent extends Component
         $this->getAllAbsencesAsec();
     }
 
-
-    /**
-     * Mount the component
-     */
-    function renderAbsences(){
-        $this->getAllAbsencesAsec();
-        $this->getDepartments();
-    }
 
     /**
      * Get the current dates corresponding to each week. Only a range of up to 4 weeks is calculated.
@@ -452,7 +457,6 @@ class ScheduleComponent extends Component
             array_push($this->weeks, [date_format($startDate, 'd/m'), date_format($endDate, 'd/m')]);
         }
     }
-
 
 
     /**

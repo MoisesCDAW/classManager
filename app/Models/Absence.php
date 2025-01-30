@@ -22,6 +22,7 @@ class Absence extends Model
         'endHour',
         'hourNumber',
         'dayNumber',
+        'week'
     ];
 
     /**

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->time('endHour', precision: 0);
             $table->integer('hourNumber');
             $table->integer('dayNumber');
+            $table->integer('week');
             $table->timestamps();
         });
     }

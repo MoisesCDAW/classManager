@@ -1,10 +1,11 @@
-<div wire:poll.10s="renderAbsences">
+<div wire:poll.10s="getAllAbsencesAsec">
     <!-- component -->
     <div class="p-2">
 
         <div class="lg:w-7/12 md:w-9/12 sm:w-10/12 mx-auto my-4">
             <div class="bg-white shadow-lg shadow-gray-600 rounded-xl">
 
+                {{-- Header --}}
                 <div class="flex flex-col sm:flex-row justify-between p-5 gap-5 sm:gap-0">
 
                     <!-- Table description -->
@@ -13,9 +14,9 @@
                             <div>
                                 <h3 class="font-semibold text-gray-800">Registro de Ausencias</h3>
                                 <p class="text-gray-500 text-sm">Detalles de inasistencias para cada día en cada hora.</p>
-                                <select class="text-gray-500 text-sm font-bold mt-2 border border-gray-300 rounded-md">
+                                <select wire:click="changeWeek" wire:model="weekNumber" class="text-gray-500 text-sm font-bold mt-2 border border-gray-300 rounded-md">
                                     @foreach ($weeks as $week)
-                                        <option class="text-gray-500 text-sm font-bold mt-2">{{$currentYear}} - Semana: {{$week[0]}} al {{$week[1]}}</option>               
+                                        <option class="text-gray-500 text-sm font-bold mt-2" value="{{$loop->index}}">{{$currentYear}} - Semana: {{$week[0]}} al {{$week[1]}}</option>               
                                     @endforeach
                                 </select>
                             </div>
@@ -26,7 +27,7 @@
                     <div class="flex gap-2 items-center">
                         <button
                             id="morning-shift"
-                            class="flex items-center h-10 rounded border border-gray-300 py-2.5 px-3 text-center text-xs font-semibold text-gray-600 transition-all"
+                            class="flex items-center h-10 rounded border border-gray-300 py-2.5 px-3 text-center text-xs font-semibold text-gray-600 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                             wire:click="morningSchedule"
                             type="button">
                             Turno Mañana
@@ -41,7 +42,7 @@
                     </div>
                 </div>
 
-                {{-- Schedule --}}
+                {{-- Morning Schedule --}}
                 <div class="grid grid-cols-[10%_1fr_1fr_1fr_1fr_1fr] gap-2 p-4 text-center w-full" id="morning-Schedule">
                     <div class="text-sm">Hora</div>
                     <div class="text-sm">Lunes</div>
