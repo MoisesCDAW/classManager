@@ -2,6 +2,8 @@
 
 namespace App\Livewire;
 
+use App\Models\Absence;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -93,10 +95,13 @@ class ScheduleComponent extends Component
     /**
      * Data to Add model
      */
-    public $commentAdd = '';
-    public $comments = [];
-    public $showComment = false;
-    public $checkDayBg = "#FFF";
+    public $departments = [];
+    public $commentAbsence = null;
+    public $professorDepartment = null;
+    public $professorName = null;
+    public $professorSurnames = null;
+
+
 
     /**
      * Render the component
@@ -138,6 +143,7 @@ class ScheduleComponent extends Component
         return $this->absencesTotalForDay>0;
     }
 
+
     /**
      * Find all the absences that match the hour and day passed as parameters, along with their respective user and department.
      */
@@ -167,6 +173,17 @@ class ScheduleComponent extends Component
     }
 
 
+    public function morningSchedule(){
+        
+        $this->js("
+            const element = document.querySelector('#morning-shift');
+            element.classList.toggle('outline');
+            element.classList.toggle('outline-3');
+            element.classList.toggle('outline-gray-600');
+        ");
+    }
+
+
     /**
      * Manages when to show or hide the scroll sidebar.
      */
@@ -175,28 +192,55 @@ class ScheduleComponent extends Component
     }
 
 
-    public function chooseAction($hourNumber=null, $dayNumber=null){
+    /**
+     * This function is used to display a modal where the user can select the action they want to perform: 
+     * either adding an absence or viewing all absences for that day. It is only used when there is an absence on the day the click was made.
+     */
+    public function chooseAction($both, $hourNumber=null, $dayNumber=null){
         $this->hourNumber = $hourNumber;
         $this->dayNumber = $dayNumber;
-        $this->viewChooseAction = !$this->viewChooseAction;
-        $this->toggleScroll();
+        $this->js("document.querySelector('html').classList.toggle('overflow-hidden')");
+
+        if ($both) {
+            $this->viewChooseAction = !$this->viewChooseAction;    
+        }else {
+            $this->toggleShowAddAbsence();
+        }
+
     }
 
 
     /**
      * Toggle the view of all absences
      */
-    function toggleShowAllAbsences(){
+    function toggleShowAllAbsences($scroll=false){
         $this->viewAllAbsences = !$this->viewAllAbsences;
+        $this->viewChooseAction = false; 
         $this->getAbsencesForDayAndHour();
+
+        if ($scroll) {
+            $this->toggleScroll();
+        }
+        
     }
 
 
     /**
      * Toggle the view of the add absence form
      */
-    function toggleShowAddAbsence(){
+    function toggleShowAddAbsence($scroll=false){
         $this->viewAddAbsence = !$this->viewAddAbsence;
+        $this->viewChooseAction = false;
+
+        $this->js("document.querySelector('html').classList.add('overflow-hidden')");
+
+        if ($scroll) {
+            $this->js("document.querySelector('html').classList.remove('overflow-hidden')");
+            $this->professorDepartment = null;
+            $this->commentAbsence = null;
+            $this->professorName = null;
+            $this->professorSurnames = null;
+        }
     } 
     
     
@@ -208,6 +252,7 @@ class ScheduleComponent extends Component
         $this->viewEditAbsence = !$this->viewEditAbsence;
     }  
 
+
     /**
      * Order the absences by descending
      */
@@ -215,6 +260,7 @@ class ScheduleComponent extends Component
         $this->orderDesc = false;
         $this->orderAsc = true;
     }
+
 
     /**
      * Order the absences by ascending
@@ -224,6 +270,7 @@ class ScheduleComponent extends Component
         $this->orderAsc = false;
     }
     
+
     /**
      * Check if the time to edit the absence has passed
      */
@@ -246,36 +293,93 @@ class ScheduleComponent extends Component
     }
 
 
-    function searchComment($idHour, $idDay){
-        $dayChecked = false;
-        foreach ($this->comments as $c) {
-            if ($c['idHour'] == $idHour && $c['idDay'] == $idDay) {
-                $dayChecked = true;
-                break;
-            }
-        }
-
-        return $dayChecked;
+    /**
+     * Gets all departments from the database.
+     */
+    function getDepartments(){
+        $this->departments = DB::table('departments')->get();
     }
+
 
     /**
      * Add an absence
      */
-    function addComment() {
-        array_push($this->comments, ['idHour' => $this->hourNumber, 'idDay' => $this->dayNumber, 'comment' => $this->commentAdd]);
-        $this->checkDayBg = "#DDD";
-        $this->showComment = !$this->showComment;
-        // dd($this->comments);
+    function addAbsence() {
+
+        $admin = [
+            'professorDepartment' => 'required|exists:departments,id',
+            'professorName' => 'required|regex:/^[A-Za-záéíóúÁÉÍÓÚ\s]+$/|max:255', 
+            'professorSurnames' => 'required|regex:/^[A-Za-záéíóúÁÉÍÓÚ\s]+$/|max:255',
+            'commentAbsence' => 'required|regex:/^[A-Za-z0-9áéíóúÁÉÍÓÚ\s]+$/|min:10|max:500'
+        ];
+
+        $professor = [
+            'commentAbsence' => 'required|regex:/^[A-Za-z0-9áéíóúÁÉÍÓÚ\s]+$/|min:10|max:500'
+        ];
+
+
+        if (auth()->user()->hasRole('admin')) {
+
+            $this->validate($admin);
+
+            $exist = DB::table('users')
+            ->where('department_id', $this->professorDepartment)
+            ->where('name', $this->professorName)
+            ->where('surnames', $this->professorSurnames)
+            ->first();
+
+            if ($exist) {
+                Absence::create([
+                    'user_id' => $exist->id,
+                    'comment' => $this->commentAbsence,
+                    'startHour' => $this->morningSchedule[$this->hourNumber][0],
+                    'endHour' => $this->morningSchedule[$this->hourNumber][1],
+                    'hourNumber' => $this->hourNumber,
+                    'dayNumber' => $this->dayNumber
+                ]);
+
+            $this->toggleShowAddAbsence(true);
+            $this->renderAbsences();
+
+            }else{
+                // ...
+            }
+
+        }
+        
+
+        if (auth()->user()->hasRole('professor')){
+            $this->validate($professor);
+
+            Absence::create([
+                'user_id' => Auth::id(),
+                'comment' => $this->commentAbsence,
+                'startHour' => $this->morningSchedule[$this->hourNumber][0],
+                'endHour' => $this->morningSchedule[$this->hourNumber][1],
+                'hourNumber' => $this->hourNumber,
+                'dayNumber' => $this->dayNumber
+            ]);
+
+            $this->toggleShowAddAbsence(true);
+            $this->renderAbsences();
+        }
     }
 
+
     /**
-     * Toggle the view of the add comment form
+     * Edit an absence
      */
-    function toggleShowAddComment($idHour = null, $idDay = null){
-        $this->showComment = !$this->showComment;
-        $this->hourNumber = $idHour;
-        $this->dayNumber = $idDay;
-        $this->checkDayBg = "#FFF";
+    function editAbsence(){
+        
+    }
+
+
+    /**
+     * Mount the component
+     */
+    function renderAbsences(){
+        $this->getAllAbsencesAsec();
+        $this->getDepartments();
     }
 
 
@@ -284,6 +388,7 @@ class ScheduleComponent extends Component
      */
     function mount(){
         $this->getAllAbsencesAsec();
+        $this->getDepartments();
     }
 }
 

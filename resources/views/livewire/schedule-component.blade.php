@@ -1,4 +1,4 @@
-<div>
+<div wire:poll.10s="renderAbsences">
     <!-- component -->
     <div class="p-2">
 
@@ -26,12 +26,15 @@
                     <!-- Action buttons -->
                     <div class="flex gap-2 items-center">
                         <button
-                            class="flex items-center h-10 rounded border border-gray-300 py-2.5 px-3 text-center text-xs font-semibold text-gray-600 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                            id="morning-shift"
+                            class="flex items-center h-10 rounded border border-gray-300 py-2.5 px-3 text-center text-xs font-semibold text-gray-600 transition-all"
+                            wire:click="morningSchedule"
                             type="button">
                             Turno Mañana
                         </button>
                     
                         <button
+                            id="afternoon-shift"
                             class="flex items-center h-10 rounded border border-gray-300 py-2.5 px-3 text-center text-xs font-semibold text-gray-600 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                             type="button">
                             Turno Tarde
@@ -40,7 +43,7 @@
                 </div>
 
                 {{-- Schedule --}}
-                <div class="grid grid-cols-[10%_1fr_1fr_1fr_1fr_1fr] gap-2 p-4 text-center w-full" id="calendar">
+                <div class="grid grid-cols-[10%_1fr_1fr_1fr_1fr_1fr] gap-2 p-4 text-center w-full" id="morning-Schedule">
                     <div class="text-sm">Hora</div>
                     <div class="text-sm">Lunes</div>
                     <div class="text-sm">Martes</div>
@@ -53,16 +56,19 @@
                         <div class="text-sm p-4 flex justify-center items-center h-[8vh]">{{$hour[0]}} <br> {{$hour[1]}}</div>
                         
                         @foreach ($days as $day)
-                            <a href="#app-blade" wire:click="chooseAction({{$loop->parent->index}}, {{$loop->index}})" class="border-2 rounded-lg flex justify-center sm:block cursor-pointer" style="background-color: {{$hour[3]}}">
+            
+                            {{-- First param: hourNumber, Second param: dayNumber--}}
+                            @if ($this->printAbsences($loop->parent->index, $loop->index))
 
-                                {{-- First param: hourNumber, Second param: dayNumber--}}
-                                @if ($this->printAbsences($loop->parent->index, $loop->index))
-
-                                    {{-- A link was applied at the top of the page (layout: app-blade) to control that no content is displayed outside the space occupied by the modal. --}}
+                                {{-- A link was applied at the top of the page (layout: app-blade) to control that no content is displayed outside the space occupied by the modal. --}}
+                                <a href="#app-blade" wire:click="chooseAction({{true}}, {{$loop->parent->index}}, {{$loop->index}})" class="border-2 rounded-lg flex justify-center sm:block cursor-pointer" style="background-color: {{$hour[3]}}">
                                     <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center text-gray-500" style="background-color: {{$hour[2]}}">{{ $this->absencesTotalForDay }}</div>
-                                @endif
+                                </a>
 
-                            </a>
+                            @else
+                                <a href="#app-blade" wire:click="chooseAction(@js(false), {{$loop->parent->index}}, {{$loop->index}})" class="border-2 rounded-lg flex justify-center sm:block cursor-pointer" style="background-color: {{$hour[3]}}"></a>
+                            @endif
+
                         @endforeach
                     @endforeach
                 </div>
@@ -87,7 +93,7 @@
                     </div>
                     
                     <div class="flex justify-center">
-                        <button wire:click="chooseAction" class="rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-sm text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                        <button wire:click="chooseAction({{true}})" class="rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-sm text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
                             Cancelar
                         </button>
                     </div>
@@ -106,39 +112,42 @@
                     <div class="flex flex-col p-4 w-[90vw] h-[90vh] rounded-lg bg-gray-800 shadow-sm ">
                         <div class="flex flex-col gap-4 w-full overflow-y-scroll lg:overflow-y-hidden">
                             <label>
-                                <span class="text-sm text-gray-500">** Selecciona el departamento para poder ingresar el nombre y apellidos del profesor<span> <br>
-                                <select class="text-gray-500 text-sm font-bold mt-2 border border-gray-300 rounded-md">
+                                <select class="text-gray-500 text-sm font-bold mt-2 border border-gray-300 rounded-md" wire:model="professorDepartment">
                                     <option>Seleccionar departamento</option>
-                                    <option>Informática</option>
-                                    <option>Idiomas</option>
-                                    <option>Ciencias</option>
+                                    @foreach ($departments as $department)
+                                        <option value="{{$department->id}}">{{$department->name}}</option>
+                                    @endforeach
                                 </select>
+                                @error('professorDepartment') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </label>
 
                             <div class="flex gap-4 flex-col sm:flex-row">
                                 <label class="w-full lg:w-[25vw]">
                                     <span class="text-sm text-gray-500">Nombre del profesor<span> <br>
-                                    <input type="text" class="w-full bg-gray-900 border-gray-700 rounded-md p-2 mt-3 text-white">
+                                    <input wire:model="professorName" type="text" class="w-full bg-gray-900 border-gray-700 rounded-md p-2 mt-3 text-white">
+                                    @error('professorName') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </label>
                                 
                                 <label class="w-full lg:w-[25vw]">
                                     <span class="text-sm text-gray-500">Apellidos del profesor<span> <br>
-                                    <input type="text" class="w-full bg-gray-900 border-gray-700 rounded-md p-2 mt-3 text-white" disabled>
+                                    <input wire:model="professorSurnames" type="text" class="w-full bg-gray-900 border-gray-700 rounded-md p-2 mt-3 text-white">
+                                    @error('professorSurnames') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                                 </label>
                             </div>
 
                             {{-- Comment --}}
-                            <textarea wire:model="comment" class="text-sm text-white w-full min-h-[35vh] sm:min-h-[60vh] lg:min-h-[40vh] bg-gray-900 border-gray-700 rounded-md" placeholder="Añade un comentario para crear la ausencia..."></textarea>
+                            <textarea wire:model="commentAbsence" class="text-sm text-white w-full min-h-[35vh] sm:min-h-[60vh] lg:min-h-[40vh] bg-gray-900 border-gray-700 rounded-md" placeholder="Añade un comentario para crear la ausencia..."></textarea>
+                            @error('commentAbsence') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                         </div> 
 
                         
                         <!-- Modal buttons -->
                         <div class="flex items-center pt-4 justify-end">
-                            <button wire:click="toggleShowAddAbsence" class="rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-sm text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                            <button wire:click="toggleShowAddAbsence({{true}})" class="rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-sm text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
                                 Cancelar
                             </button>
-                            <button class="rounded-md bg-white py-2 px-4 border border-transparent text-center text-sm text-black transition-all shadow-md hover:shadow-lg focus:bg-gray-300 focus:shadow-none active:bg-gray-300 hover:bg-gray-300 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
-                                Editar
+                            <button wire:click="addAbsence" class="rounded-md bg-white py-2 px-4 border border-transparent text-center text-sm text-black transition-all shadow-md hover:shadow-lg focus:bg-gray-300 focus:shadow-none active:bg-gray-300 hover:bg-gray-300 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                                Enviar
                             </button>
                         </div>
                     </div> 
@@ -146,17 +155,18 @@
                     <div class="flex flex-col p-4 w-[90vw] h-[70vh] rounded-lg bg-gray-800 shadow-sm ">
                         <div class="flex flex-col gap-4 w-full overflow-y-scroll md:overflow-y-hidden">
                             {{-- Comment --}}
-                            <textarea wire:model="comment" class="text-sm text-white w-full min-h-[50vh] sm:min-h-[70vh] lg:min-h-[50vh] bg-gray-900 border-gray-700 rounded-md" placeholder="Añade un comentario para crear la ausencia..."></textarea>
+                            <textarea wire:model="commentAbsence" class="text-sm text-white w-full min-h-[50vh] sm:min-h-[70vh] lg:min-h-[50vh] bg-gray-900 border-gray-700 rounded-md" placeholder="Añade un comentario para crear la ausencia..."></textarea>
+                            @error('commentAbsence') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                         </div>  
                     
 
                         <!-- Modal buttons -->
                         <div class="flex items-center pt-4 justify-end">
-                            <button wire:click="toggleShowAddAbsence" class="rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-sm text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                            <button wire:click="toggleShowAddAbsence({{true}})" class="rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-sm text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
                                 Cancelar
                             </button>
-                            <button class="rounded-md bg-white py-2 px-4 border border-transparent text-center text-sm text-black transition-all shadow-md hover:shadow-lg focus:bg-gray-300 focus:shadow-none active:bg-gray-300 hover:bg-gray-300 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
-                                Editar
+                            <button wire:click="addAbsence" class="rounded-md bg-white py-2 px-4 border border-transparent text-center text-sm text-black transition-all shadow-md hover:shadow-lg focus:bg-gray-300 focus:shadow-none active:bg-gray-300 hover:bg-gray-300 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                                Enviar
                             </button>
                         </div>
                     </div>
@@ -233,7 +243,7 @@
 
                 <!-- Modal buttons -->
                 <div class="flex shrink-0 flex-wrap items-center pt-4 justify-end">
-                    <button wire:click="toggleShowAllAbsences" class="rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-sm text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                    <button wire:click="toggleShowAllAbsences({{true}})" class="rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-sm text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
                         Cerrar
                     </button>
                 </div>

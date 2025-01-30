@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
         User::create([
             'department_id' => 1,
             'name' => 'Admin',
+            'surnames' => 'Admin',
             'email' => 'admin@gmail.com',
             'password' => Hash::make('aA1$qwer'),
         ]);
@@ -34,6 +35,7 @@ class DatabaseSeeder extends Seeder
         User::create([
             'department_id' => 1,
             'name' => 'Moisés',
+            'surnames' => 'Campos Perdomo',
             'email' => 'moises@gmail.com',
             'password' => Hash::make('aA1$qwer'),
         ]);
