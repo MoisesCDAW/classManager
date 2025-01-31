@@ -1,10 +1,4 @@
 <x-mail::message>
-Ahora solo tienes que cambiar tu contraseña y para eso lo puedes hacer con el siguiente botón:
-
-<x-mail::button :url="''">
-Cambiar contraseña
-</x-mail::button>
-
-Atentamente,<br>
-{{ config('app.name') }}
+    El profesor {{ $professorName }} {{ $professorSurnames }} ha agregado una ausencia 
+    para el {{ $day }} de la semana del {{ $week[0] }} al {{ $week[1] }} de {{ $absence->startHour }} a {{ $absence->endHour }}
 </x-mail::message>

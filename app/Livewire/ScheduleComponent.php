@@ -2,9 +2,11 @@
 
 namespace App\Livewire;
 
+use App\Mail\ProfessorsMail;
 use App\Models\Absence;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 class ScheduleComponent extends Component
@@ -385,7 +387,7 @@ class ScheduleComponent extends Component
         if (auth()->user()->hasRole('professor')){
             $this->validate($professor);
 
-            Absence::create([
+            $absence = Absence::create([
                 'user_id' => Auth::id(),
                 'comment' => $this->commentAbsence,
                 'startHour' => $this->morningSchedule[$this->hourNumber][0],
@@ -394,6 +396,8 @@ class ScheduleComponent extends Component
                 'dayNumber' => $this->dayNumber,
                 'week' => $this->weekNumber,
             ]);
+
+            Mail::to("admin@gmail.com")->send(new ProfessorsMail(Auth::user(), $absence, $this->weeks[$this->weekNumber], $this->days[$this->dayNumber]));
 
             $this->toggleShowAddAbsence(true);
             $this->getAllAbsencesAsec();

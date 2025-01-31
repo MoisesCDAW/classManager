@@ -78,7 +78,8 @@ class UserManagerComponent extends Component
             'surnames' => $this->professorSurnames,
             'email' => $this->email,
             'password' => Hash::make('aA1$qwer'),
-        ]);
+            
+        ])->assignRole('professor');
 
         $this->sendPasswordResetLink();
 

@@ -9,17 +9,28 @@ use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Auth;
 
 class ProfessorsMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $professorName = null;
+    public $professorSurnames = null;
+    public $absence = null;
+    public $week = null;
+    public $day = null;
+
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($professor, $absence, $week, $day)
     {
-        //
+        $this->professorName = $professor->name;
+        $this->professorSurnames = $professor->surnames;
+        $this->absence = $absence;
+        $this->week = $week;
+        $this->day = $day;
     }
 
     /**
@@ -28,7 +39,7 @@ class ProfessorsMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '¡Bienvenid@ a ClassManager!',
+            subject: '¡Nueva ausencia registrada!',
         );
     }
 
