@@ -1,4 +1,4 @@
-<div wire:poll.10s="getAllAbsencesAsec">
+<div wire:poll.10s="renderSchudele">
     <!-- component -->
     <div class="p-2">
 
@@ -14,7 +14,7 @@
                             <div>
                                 <h3 class="font-semibold text-gray-800">Registro de Ausencias</h3>
                                 <p class="text-gray-500 text-sm">Detalles de inasistencias para cada día en cada hora.</p>
-                                <select wire:click="changeWeek" wire:model="weekNumber" class="text-gray-500 text-sm font-bold mt-2 border border-gray-300 rounded-md">
+                                <select wire:click="getAllAbsencesAsec" wire:model="weekNumber" class="text-gray-500 text-sm font-bold mt-2 border border-gray-300 rounded-md">
                                     @foreach ($weeks as $week)
                                         <option class="text-gray-500 text-sm font-bold mt-2" value="{{$loop->index}}">{{$currentYear}} - Semana: {{$week[0]}} al {{$week[1]}}</option>               
                                     @endforeach
@@ -83,7 +83,7 @@
                 <!-- Modal body -->
                 <div class="flex flex-col p-4 w-[80vw] h-[25vh] sm:w-[50vw] sm:h-[45vh] lg:w-[25vw] lg:h-[25vh] rounded-lg bg-gray-800 shadow-sm justify-center gap-4">
                     <div class="flex flex-col gap-2 w-full justify-center">
-                        <button wire:click="toggleShowAddAbsence" class="rounded-md bg-white py-2 px-4 border border-transparent text-center text-sm text-black transition-all shadow-md hover:shadow-lg focus:bg-gray-300 focus:shadow-none active:bg-gray-300 hover:bg-gray-300 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                        <button wire:click="toggleShowAddAbsence" class="rounded-md bg-gray-300 py-2 px-4 border border-transparent text-center text-sm text-black transition-all shadow-md hover:shadow-lg focus:bg-white focus:shadow-none active:bg-white hover:bg-white active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
                             Crear Ausencia
                         </button>
                         
@@ -93,8 +93,8 @@
                     </div>
                     
                     <div class="flex justify-center">
-                        <button wire:click="chooseAction({{true}})" class="rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-sm text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
-                            Cancelar
+                        <button wire:click="chooseAction({{true}})" class="tracking-widest rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-xs font-semibold text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                            CANCELAR
                         </button>
                     </div>
                 </div>
@@ -143,11 +143,11 @@
                         
                         <!-- Modal buttons -->
                         <div class="flex items-center pt-4 justify-end">
-                            <button wire:click="toggleShowAddAbsence({{true}})" class="rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-sm text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
-                                Cancelar
+                            <button wire:click="toggleShowAddAbsence({{true}})" class="tracking-widest rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-xs font-semibold text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                                CANCELAR
                             </button>
-                            <button wire:click="addAbsence" class="rounded-md bg-white py-2 px-4 border border-transparent text-center text-sm text-black transition-all shadow-md hover:shadow-lg focus:bg-gray-300 focus:shadow-none active:bg-gray-300 hover:bg-gray-300 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
-                                Enviar
+                            <button wire:click="addAbsence" class="tracking-widest rounded-md bg-gray-300 py-2 px-4 border border-transparent text-center text-xs font-semibold text-black transition-all shadow-md hover:shadow-lg focus:bg-white focus:shadow-none active:bg-white hover:bg-white active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                                ENVIAR
                             </button>
                         </div>
                     </div> 
@@ -162,11 +162,11 @@
 
                         <!-- Modal buttons -->
                         <div class="flex items-center pt-4 justify-end">
-                            <button wire:click="toggleShowAddAbsence({{true}})" class="rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-sm text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
-                                Cancelar
+                            <button wire:click="toggleShowAddAbsence({{true}})" class="tracking-widest rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-xs font-semibold text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                                CANCELAR
                             </button>
-                            <button wire:click="addAbsence" class="rounded-md bg-white py-2 px-4 border border-transparent text-center text-sm text-black transition-all shadow-md hover:shadow-lg focus:bg-gray-300 focus:shadow-none active:bg-gray-300 hover:bg-gray-300 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
-                                Enviar
+                            <button wire:click="addAbsence" class="tracking-widest rounded-md bg-gray-300 py-2 px-4 border border-transparent text-center text-xs font-semibold text-black transition-all shadow-md hover:shadow-lg focus:bg-white focus:shadow-none active:bg-white hover:bg-white active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                                ENVIAR
                             </button>
                         </div>
                     </div>
@@ -189,14 +189,14 @@
 
                         {{-- Order buttons --}}
                         @if ($orderDesc)
-                            <button wire:click="orderByDesc" class="rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-gray-300 shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
-                                Ordenar descendente
+                            <button wire:click="orderByDesc" class="tracking-widest rounded-md border border-transparent py-2 px-4 text-center text-xs font-semibold transition-all text-gray-300 shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                                ORDENAR DESCENDENTE
                             </button>
                         @endif
 
                         @if ($orderAsc)
-                            <button wire:click="orderByAsc" class="rounded-md border border-transparent py-2 px-4 text-center text-sm transition-all text-gray-300 shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
-                                Ordenar ascendente
+                            <button wire:click="orderByAsc" class="tracking-widest rounded-md border border-transparent py-2 px-4 text-center text-xs font-semibold transition-all text-gray-300 shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                                ORDENAR ASCENDENTE
                             </button>
                         @endif
 
@@ -230,7 +230,6 @@
 
                                 {{-- Comment --}}
                                 <p class="mt-4 text-gray-600 max-w-[90vw] line-clamp-3">{{$absencesForDayAndHour[$loop->index]->comment}}</p>
-                                <a class="text-sm text-gray-600 font-semibold cursor-pointer">Leer más</a> 
                                 
                                 {{-- Department and publication date --}}
                                 <div class="flex items-center justify-between mt-6">
@@ -243,8 +242,8 @@
 
                 <!-- Modal buttons -->
                 <div class="flex shrink-0 flex-wrap items-center pt-4 justify-end">
-                    <button wire:click="toggleShowAllAbsences({{true}})" class="rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-sm text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
-                        Cerrar
+                    <button wire:click="toggleShowAllAbsences({{true}})" class="tracking-widest rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-xs font-semibold text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                        CERRAR
                     </button>
                 </div>
             </div>
@@ -267,11 +266,11 @@
 
                     <!-- Modal buttons -->
                     <div class="flex items-center pt-4 justify-end">
-                        <button wire:click="toggleShowEditAbsence" class="rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-sm text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
-                            Cancelar
+                        <button wire:click="toggleShowEditAbsence" class="tracking-widest rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-xs font-semibold text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                            CANCELAR
                         </button>
-                        <button wire:click="editAbsence" class="rounded-md bg-white py-2 px-4 border border-transparent text-center text-sm text-black transition-all shadow-md hover:shadow-lg focus:bg-gray-300 focus:shadow-none active:bg-gray-300 hover:bg-gray-300 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
-                            Editar
+                        <button wire:click="editAbsence" class="tracking-widest rounded-md bg-gray-300 py-2 px-4 border border-transparent text-center text-xs font-semibold text-black transition-all shadow-md hover:shadow-lg focus:bg-white focus:shadow-none active:bg-white hover:bg-white active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                            EDITAR
                         </button>
                     </div>
                 </div>

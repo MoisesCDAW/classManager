@@ -121,8 +121,9 @@ class ScheduleComponent extends Component
     }
 
 
-    function changeWeek(){
-
+    function renderSchudele(){
+        $this->getAllAbsencesAsec();
+        $this->getAbsencesForDayAndHour();
     }
 
 
