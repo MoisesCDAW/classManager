@@ -339,8 +339,8 @@ class ScheduleComponent extends Component
         // Validations that will be applied depending on the type of form to be used. The form type depends on the session user's role
         $admin = [
             'professorDepartment' => 'required|exists:departments,id',
-            'professorName' => 'required|regex:/^[A-Za-záéíóúÁÉÍÓÚ\s]+$/|max:255', 
-            'professorSurnames' => 'required|regex:/^[A-Za-záéíóúÁÉÍÓÚ\s]+$/|max:255',
+            'professorName' => 'required|regex:/^[A-Za-záéíóúÁÉÍÓÚ\s]+$/|max:255|exists:users,name', 
+            'professorSurnames' => 'required|regex:/^[A-Za-záéíóúÁÉÍÓÚ\s]+$/|max:255|exists:users,surnames',
             'commentAbsence' => 'required|regex:/^[A-Za-z0-9áéíóúÁÉÍÓÚ\s\.\,\(\)\?\¿\!\¡]+$/|min:10|max:500'
         ];
 
