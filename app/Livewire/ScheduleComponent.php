@@ -170,7 +170,7 @@ class ScheduleComponent extends Component
     /**
      * Find all the absences that match the hour and day passed as parameters, along with their respective user and department.
      */
-    function getAbsencesForDayAndHour(){
+    function getAbsencesForDayAndHour($order="asc"){
         // Reset the professors and absences
         $this->professors = [];
         $this->absencesForDayAndHour = [];
@@ -179,6 +179,7 @@ class ScheduleComponent extends Component
         $this->absencesForDayAndHour = DB::table('absences')
                 ->where('hourNumber', $this->hourNumber)
                 ->where('dayNumber', $this->dayNumber)
+                ->orderBy('created_at', $order)
                 ->get();
 
         // Find the user and department of each absence
@@ -282,6 +283,7 @@ class ScheduleComponent extends Component
     function orderByDesc(){
         $this->orderDesc = false;
         $this->orderAsc = true;
+        $this->getAbsencesForDayAndHour($order="desc");
     }
 
 
@@ -291,6 +293,7 @@ class ScheduleComponent extends Component
     function orderByAsc(){
         $this->orderDesc = true;
         $this->orderAsc = false;
+        $this->getAbsencesForDayAndHour();
     }
     
 
@@ -469,7 +472,7 @@ class ScheduleComponent extends Component
 
 
     function getHeaderID(){
-        
+
     }
 
 
