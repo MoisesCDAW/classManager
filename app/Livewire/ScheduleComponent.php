@@ -11,6 +11,11 @@ class ScheduleComponent extends Component
 {
 
     /**
+     * "Store the current page header ID to enable the redirection to the top every time a time slot is clicked."
+     */
+    public $headerID = null;
+
+    /**
      * Morning schedule, The hour numbers will be saved, with a start and end pair considered a single block.
      */
     public $morningSchedule = [
@@ -121,6 +126,9 @@ class ScheduleComponent extends Component
     }
 
 
+    /**
+     * "Render the schedule view with the updated data after the update time marked in the wire:poll." 
+     */
     function renderSchudele(){
         $this->getAllAbsencesAsec();
         $this->getAbsencesForDayAndHour();
@@ -457,6 +465,11 @@ class ScheduleComponent extends Component
     
             array_push($this->weeks, [date_format($startDate, 'd/m'), date_format($endDate, 'd/m')]);
         }
+    }
+
+
+    function getHeaderID(){
+        
     }
 
 

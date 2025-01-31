@@ -61,12 +61,12 @@
                             @if ($this->printAbsences($loop->parent->index, $loop->index))
 
                                 {{-- A link was applied at the top of the page (layout: app-blade) to control that no content is displayed outside the space occupied by the modal. --}}
-                                <a href="#app-blade" wire:click="chooseAction({{true}}, {{$loop->parent->index}}, {{$loop->index}})" class="border-2 rounded-lg flex justify-center sm:block cursor-pointer" style="background-color: {{$hour[3]}}">
+                                <a href="#header-layout" wire:click="chooseAction({{true}}, {{$loop->parent->index}}, {{$loop->index}})" class="checkbox border-2 rounded-lg flex justify-center sm:block cursor-pointer" style="background-color: {{$hour[3]}}">
                                     <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center text-gray-500" style="background-color: {{$hour[2]}}">{{ $this->absencesTotalForDay }}</div>
                                 </a>
 
                             @else
-                                <a href="#app-blade" wire:click="chooseAction(@js(false), {{$loop->parent->index}}, {{$loop->index}})" class="border-2 rounded-lg flex justify-center sm:block cursor-pointer" style="background-color: {{$hour[3]}}"></a>
+                                <a href="#header-layout" wire:click="chooseAction(@js(false), {{$loop->parent->index}}, {{$loop->index}})" class="checkbox border-2 rounded-lg flex justify-center sm:block cursor-pointer" style="background-color: {{$hour[3]}}"></a>
                             @endif
 
                         @endforeach
