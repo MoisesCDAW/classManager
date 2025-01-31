@@ -72,8 +72,8 @@
 
                             <label>
                                 <span class="text-sm text-gray-500">Email<span> <br>
-                                <x-text-input wire:model="professorEmail" type="email" class="mt-1 block w-full placeholder:text-sm" required placeholder="Ej: juanfern@gmail.com" />
-                                @error('professorEmail') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                <x-text-input wire:model="email" type="email" class="mt-1 block w-full placeholder:text-sm" required placeholder="Ej: juanfern@gmail.com" />
+                                @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                             </label>
                         </div>
 

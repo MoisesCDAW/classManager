@@ -2,11 +2,13 @@
 
 namespace App\Livewire;
 
+use App\Mail\ProfessorsMail;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
+use Illuminate\Support\Facades\Password;
 
 class UserManagerComponent extends Component
 {
@@ -16,7 +18,7 @@ class UserManagerComponent extends Component
     public $departmentID = null;
     public $professorName = null;
     public $professorSurnames = null;
-    public $professorEmail = null;
+    public $email = '';
 
 
     /**
@@ -35,6 +37,27 @@ class UserManagerComponent extends Component
         $this->departments = DB::table('departments')->get();
     }
 
+    /**
+     * It is responsible for sending the email so that the professor can assign their own password.
+     */
+    public function sendPasswordResetLink(){
+
+        // Sends a password reset link to the user's email
+        $status = Password::sendResetLink(
+            $this->only('email')
+        );
+
+        // Checks if the password reset link was successfully sent
+        if ($status != Password::RESET_LINK_SENT) {
+            $this->addError('email', __($status));
+
+            return;
+        }
+
+        // Flash a success message to the session
+        session()->flash('status', __($status));
+    }
+
 
     /**
      * Allows adding a professor. Checks that the data is valid and that the email is unique.
@@ -46,22 +69,24 @@ class UserManagerComponent extends Component
             'departmentID' => 'required|exists:departments,id',
             'professorName' => 'required|regex:/^[A-Za-záéíóúÁÉÍÓÚ\s]+$/|max:255', 
             'professorSurnames' => 'required|regex:/^[A-Za-záéíóúÁÉÍÓÚ\s]+$/|max:255',
-            'professorEmail' => 'required|regex:/^[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,5}$/|max:500|unique:users,email',
+            'email' => 'required|regex:/^[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*@[a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,5}$/|max:500|unique:users,email',
         ]);
 
         User::create([
             'department_id' => $this->departmentID,
             'name' => $this->professorName,
             'surnames' => $this->professorSurnames,
-            'email' => $this->professorEmail,
+            'email' => $this->email,
             'password' => Hash::make('aA1$qwer'),
         ]);
+
+        $this->sendPasswordResetLink();
 
         // Reset input fields to null after successful registration
         $this->departmentID = null;
         $this->professorName = null;
         $this->professorSurnames = null;
-        $this->professorEmail = null;
+        $this->email = null;
     }
 
     /**

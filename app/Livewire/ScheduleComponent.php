@@ -376,10 +376,7 @@ class ScheduleComponent extends Component
             $this->toggleShowAddAbsence(true);
             $this->getAllAbsencesAsec();
 
-            }else{
-                // ...
             }
-
         }
         
         /** 
