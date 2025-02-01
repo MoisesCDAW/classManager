@@ -7,6 +7,7 @@ use App\Models\Absence;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
 class ScheduleComponent extends Component
@@ -337,6 +338,7 @@ class ScheduleComponent extends Component
      * Add an absence
      */
     function addAbsence() {
+        
 
         // Validations that will be applied depending on the type of form to be used. The form type depends on the session user's role
         $admin = [
@@ -351,13 +353,16 @@ class ScheduleComponent extends Component
         ];
 
 
+        
         /** 
          * ADMIN
          */
         if (auth()->user()->hasRole('admin')) {
 
             $this->validate($admin);
+            
 
+            // It is checked whether the professor belongs to that department. 
             $exist = DB::table('users')
             ->where('department_id', $this->professorDepartment)
             ->where('name', $this->professorName)
@@ -365,7 +370,7 @@ class ScheduleComponent extends Component
             ->first();
 
             if ($exist) {
-                Absence::create([
+                $absence = Absence::create([
                     'user_id' => $exist->id,
                     'comment' => $this->commentAbsence,
                     'startHour' => $this->morningSchedule[$this->hourNumber][0],
@@ -375,9 +380,14 @@ class ScheduleComponent extends Component
                     'week' => $this->weekNumber,
                 ]);
 
-            $this->toggleShowAddAbsence(true);
-            $this->getAllAbsencesAsec();
+                Mail::to("admin@gmail.com")->send(new ProfessorsMail($exist, $absence, $this->weeks[$this->weekNumber], $this->days[$this->dayNumber]));
 
+                $this->toggleShowAddAbsence(true);
+                $this->getAllAbsencesAsec();
+            }else {
+                throw ValidationException::withMessages([
+                    'professorDepartment' => ['El profesor no pertenece a ese departamento'],
+                ]);
             }
         }
         
@@ -469,11 +479,6 @@ class ScheduleComponent extends Component
     
             array_push($this->weeks, [date_format($startDate, 'd/m'), date_format($endDate, 'd/m')]);
         }
-    }
-
-
-    function getHeaderID(){
-
     }
 
 

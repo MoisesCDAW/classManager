@@ -21,6 +21,16 @@ class DatabaseSeeder extends Seeder
             'name' => 'Dirección',
         ]);
 
+        // create departments
+        Department::create([
+            'name' => 'Informática',
+        ]);
+
+        // create departments
+        Department::create([
+            'name' => 'Ciencias',
+        ]);
+
 
         // create admin user
         User::create([
