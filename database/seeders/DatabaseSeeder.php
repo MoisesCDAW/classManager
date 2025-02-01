@@ -56,6 +56,6 @@ class DatabaseSeeder extends Seeder
 
 
         // Create absences
-        Absence::factory(12)->create();
+        Absence::factory(30)->create();
     }
 }

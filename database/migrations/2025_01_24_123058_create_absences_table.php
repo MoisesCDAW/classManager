@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('hourNumber');
             $table->integer('dayNumber');
             $table->integer('week');
+            $table->string('shift');
             $table->timestamps();
         });
     }

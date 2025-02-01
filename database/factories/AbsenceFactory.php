@@ -39,8 +39,17 @@ class AbsenceFactory extends Factory
             'friday',
         ];
 
+        $shifts = [
+            "morning",
+            "afternoon"
+        ];
+
         // Random hour
         $hour = fake()->numberBetween(0, count($hours)-2);
+
+        // Random shift
+        $shift = fake()->numberBetween(0, count($shifts)-1);
+
 
 
         // Return the array with the data
@@ -52,6 +61,7 @@ class AbsenceFactory extends Factory
             'hourNumber' => $hour,
             'dayNumber' => fake()->numberBetween(0, count($days)-1),
             'week' => fake()->numberBetween(0, 3),
+            'shift' => $shifts[$shift],
         ];
     }
 }
