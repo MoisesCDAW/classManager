@@ -14,11 +14,6 @@ class ScheduleComponent extends Component
 {
 
     /**
-     * "Store the current page header ID to enable the redirection to the top every time a time slot is clicked."
-     */
-    public $headerID = null;
-
-    /**
      * Morning schedule, The hour numbers will be saved, with a start and end pair considered a single block.
      */
     public $morningSchedule = [
@@ -35,6 +30,30 @@ class ScheduleComponent extends Component
         ['12:10', '13:05', '#FFFF99', '#FFF'],
         ['13:05', '14:00', '#DFDFDF', '#FFF'],
     ];
+
+    /**
+     * Afternoon schedule, The hour numbers will be saved, with a start and end pair considered a single block.
+     */
+    public $afternoonSchedule = [
+        [
+            '14:00', // Start hour
+            '14:55', // End hour
+            '#CCFFFF', // Item color
+            '#FFF' // background color
+        ],
+        ['14:55', '15:45', '#CCFFCC', '#FFF'],
+        ['15:45', '16:45', '#CCCCFF', '#FFF'],
+        ['16:45', '17:15', '#FFFFFF', '#DDD'],
+        ['17:15', '18:10', '#FFCCFF', '#FFF'],
+        ['18:10', '19:05', '#FFFF99', '#FFF'],
+        ['19:05', '20:00', '#DFDFDF', '#FFF'],
+    ];
+
+    /**
+     * Determine which schedule should be displayed between the morning shift and the afternoon shift.
+     */
+    public $shiftSchedule = [];
+    public $shift = '';
 
     /**
      * schedule days, The days start at 0 with Monday being the first day.
@@ -161,7 +180,7 @@ class ScheduleComponent extends Component
         $this->absencesTotalForDay = 0;
 
         foreach ($this->absences as $absence) {
-            if (($absence->hourNumber==$hourNumber) && ($absence->dayNumber==$dayNumber) && ($absence->week==$this->weekNumber)) {
+            if (($absence->hourNumber==$hourNumber) && ($absence->dayNumber==$dayNumber) && ($absence->week==$this->weekNumber) && ($absence->shift==$this->shift)) {
                 $this->absencesTotalForDay++;
             }
         }
@@ -182,6 +201,7 @@ class ScheduleComponent extends Component
         $this->absencesForDayAndHour = DB::table('absences')
                 ->where('hourNumber', $this->hourNumber)
                 ->where('dayNumber', $this->dayNumber)
+                ->where('shift', $this->shift)
                 ->orderBy('created_at', $order)
                 ->get();
 
@@ -197,12 +217,6 @@ class ScheduleComponent extends Component
             
             array_push($this->professors, [$professor, $department]);
         }
-    }
-
-
-    public function morningSchedule(){
-        
-        // ...
     }
 
 
@@ -345,7 +359,7 @@ class ScheduleComponent extends Component
             'professorDepartment' => 'required|exists:departments,id',
             'professorName' => 'required|regex:/^[A-Za-záéíóúÁÉÍÓÚ\s]+$/|max:255|exists:users,name', 
             'professorSurnames' => 'required|regex:/^[A-Za-záéíóúÁÉÍÓÚ\s]+$/|max:255|exists:users,surnames',
-            'commentAbsence' => 'required|regex:/^[A-Za-z0-9áéíóúÁÉÍÓÚ\s\.\,\(\)\?\¿\!\¡]+$/|min:10|max:500'
+            'commentAbsence' => 'required|regex:/^[A-Za-z0-9áéíóúñÁÉÍÓÚÑ\s\.\,\(\)\?\¿\!\¡\-\_\:\;]+$/|min:10|max:500'
         ];
 
         $professor = [
@@ -378,6 +392,7 @@ class ScheduleComponent extends Component
                     'hourNumber' => $this->hourNumber,
                     'dayNumber' => $this->dayNumber,
                     'week' => $this->weekNumber,
+                    'shift' => $this->shift,
                 ]);
 
                 Mail::to("admin@gmail.com")->send(new ProfessorsMail($exist, $absence, $this->weeks[$this->weekNumber], $this->days[$this->dayNumber]));
@@ -405,6 +420,7 @@ class ScheduleComponent extends Component
                 'hourNumber' => $this->hourNumber,
                 'dayNumber' => $this->dayNumber,
                 'week' => $this->weekNumber,
+                'shift' => $this->shift,
             ]);
 
             Mail::to("admin@gmail.com")->send(new ProfessorsMail(Auth::user(), $absence, $this->weeks[$this->weekNumber], $this->days[$this->dayNumber]));
@@ -482,10 +498,25 @@ class ScheduleComponent extends Component
     }
 
 
+    public function afternoonShift(){
+        $this->shiftSchedule = $this->afternoonSchedule;
+        $this->shift = "afternoon";
+        $this->getAllAbsencesAsec();
+    }
+
+    public function morningShift(){
+        $this->shiftSchedule = $this->morningSchedule;
+        $this->shift = "morning";
+        $this->getAllAbsencesAsec();
+    }
+
+
     /**
      * Mount the component
      */
     function mount(){
+        $this->shiftSchedule = $this->morningSchedule;
+        $this->shift = "morning";
         $this->getDateSchedule();
         $this->getAllAbsencesAsec();
         $this->getDepartments();

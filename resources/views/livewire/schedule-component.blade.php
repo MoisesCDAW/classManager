@@ -25,20 +25,32 @@
 
                     <!-- Action buttons -->
                     <div class="flex gap-2 items-center">
+
                         <button
                             id="morning-shift"
-                            class="flex items-center h-10 rounded border border-gray-300 py-2.5 px-3 text-center text-xs font-semibold text-gray-600 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                            wire:click="morningSchedule"
+                            class="flex items-center h-10 rounded border border-gray-300 py-2.5 px-3 text-center text-xs text-gray-500 transition-all hover:opacity-75 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                            wire:click="morningShift"
                             type="button">
-                            Turno Mañana
+                            @if ($shift==="morning")
+                                <span class="font-bold text-black">Turno Mañana</span>
+                            @else
+                                Turno Mañana
+                            @endif
                         </button>
                     
                         <button
                             id="afternoon-shift"
-                            class="flex items-center h-10 rounded border border-gray-300 py-2.5 px-3 text-center text-xs font-semibold text-gray-600 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                            class="flex items-center h-10 rounded border border-gray-300 py-2.5 px-3 text-center text-xs text-gray-500 transition-all hover:opacity-75 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                            wire:click="afternoonShift"
                             type="button">
-                            Turno Tarde
+                            @if ($shift==="afternoon")
+                                <span class="font-bold text-black">Turno Tarde</span>
+                            @else
+                                Turno Tarde
+                            @endif
                         </button>
+
+                        
                     </div>
                 </div>
 
@@ -52,7 +64,7 @@
                     <div class="text-sm">Viernes</div>
 
                     <!-- Rows and columns -->
-                    @foreach ($morningSchedule as $hour)
+                    @foreach ($shiftSchedule as $hour)
                         <div class="text-sm p-4 flex justify-center items-center h-[8vh]">{{$hour[0]}} <br> {{$hour[1]}}</div>
                         
                         @foreach ($days as $day)
