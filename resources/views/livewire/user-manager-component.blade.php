@@ -14,21 +14,21 @@
                         </p>
                     </header>
                 
-                    <form class="mt-6 space-y-6">
+                    <form class="mt-6 space-y-6" enctype="multipart/form-data">
                         <div>
-                            <input type="file" class="text-sm text-gray-400">
-                            {{-- Errors --}}
+                            <input type="file" class="text-sm text-gray-400" wire:model="CSVFile">
+                            @error('CSVFile') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                         </div>
-                    </form>
-
-                    <div class="mt-8">                    
-                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                            Para obtener los datos de todos los profesores puedes descargar el siguiente fichero
-                        </p>
-                        <button class="mt-4 tracking-widest rounded-md bg-gray-300 py-2 px-4 border border-transparent text-center text-xs font-semibold text-black transition-all shadow-md hover:shadow-lg focus:bg-white focus:shadow-none active:bg-white hover:bg-white active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
-                            DESCARGAR CSV
+                        <button 
+                            wire:click.prevent="uploadCSV" wire:loading.attr="disabled" wire:target="CSVFile"
+                            class="mt-4 tracking-widest rounded-md bg-gray-300 py-2 px-4 border border-transparent text-center text-xs font-semibold text-black transition-all shadow-md hover:shadow-lg focus:bg-white focus:shadow-none active:bg-white hover:bg-white active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none" type="button">
+                            SUBIR
                         </button>
-                    </div>
+                    </form>
+                    
+                    @if ($successfulUpload)
+                        <p class="text-gray-400 text-sm mt-4">Datos subidos.</p>
+                    @endif
                 </section>
             </div>
         </div>
@@ -90,12 +90,5 @@
         </div>
         <!-- END ADD PROFESSOR COMPONENT -->
 
-        <!-- START ADD PROFESSORS COMPONENT -->
-        {{-- <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-            <div class="max-w-xl">
-                
-            </div>
-        </div> --}}
-        <!-- END ADD PROFESSORS COMPONENT -->
     </div>
 </div>
