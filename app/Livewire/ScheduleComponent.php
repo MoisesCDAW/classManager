@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Jobs\ProfessorsEmailJob;
 use App\Mail\ProfessorsMail;
 use App\Models\Absence;
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +13,6 @@ use Livewire\Component;
 
 class ScheduleComponent extends Component
 {
-
     /**
      * Morning schedule, The hour numbers will be saved, with a start and end pair considered a single block.
      */
@@ -112,7 +112,7 @@ class ScheduleComponent extends Component
     public $orderAsc = false;
 
     /**
-     * Professors, absences and departments for a specific day and hour
+     * Professors and absences for a specific day and hour
      */
     public $professors = [];
     public $absencesForDayAndHour = [];
@@ -120,7 +120,7 @@ class ScheduleComponent extends Component
     /**
      * It allows controlling the time during which a non-admin user can edit or delete an absence. This applies only to the absences created by the user.
      */
-    public $timeToEdit = 10;
+    public $timeToEdit = 10; // 10 min
 
     /**
      * Data to Add model
@@ -201,6 +201,7 @@ class ScheduleComponent extends Component
         $this->absencesForDayAndHour = DB::table('absences')
                 ->where('hourNumber', $this->hourNumber)
                 ->where('dayNumber', $this->dayNumber)
+                ->where('week', $this->weekNumber)
                 ->where('shift', $this->shift)
                 ->orderBy('created_at', $order)
                 ->get();
@@ -395,7 +396,7 @@ class ScheduleComponent extends Component
                     'shift' => $this->shift,
                 ]);
 
-                Mail::to("admin@gmail.com")->send(new ProfessorsMail($exist, $absence, $this->weeks[$this->weekNumber], $this->days[$this->dayNumber]));
+                dispatch(new ProfessorsEmailJob($exist, $absence, $this->weeks[$this->weekNumber], $this->days[$this->dayNumber]));
 
                 $this->toggleShowAddAbsence(true);
                 $this->getAllAbsencesAsec();
@@ -423,7 +424,7 @@ class ScheduleComponent extends Component
                 'shift' => $this->shift,
             ]);
 
-            Mail::to("admin@gmail.com")->send(new ProfessorsMail(Auth::user(), $absence, $this->weeks[$this->weekNumber], $this->days[$this->dayNumber]));
+            dispatch(new ProfessorsEmailJob(Auth::user(), $absence, $this->weeks[$this->weekNumber], $this->days[$this->dayNumber]));
 
             $this->toggleShowAddAbsence(true);
             $this->getAllAbsencesAsec();
