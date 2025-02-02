@@ -155,17 +155,23 @@ class ScheduleComponent extends Component
      * "Render the schedule view with the updated data after the update time marked in the wire:poll." 
      */
     function renderSchudele(){
-        $this->getAllAbsencesAsec();
-        $this->getAbsencesForDayAndHour();
+
+        if ($this->orderDesc) {
+            $this->getAllAbsencesAsec("desc");
+            $this->getAbsencesForDayAndHour("desc");
+        }else{
+            $this->getAllAbsencesAsec();
+            $this->getAbsencesForDayAndHour();
+        }
     }
 
 
     /**
      * Get all absences ordered by hour number ascending
      */	
-    function getAllAbsencesAsec() {
+    function getAllAbsencesAsec($order = "asc") {
         $absences = DB::table('absences')
-                ->orderBy('hourNumber', 'asc')
+                ->orderBy('hourNumber', $order)
                 ->get();
 
         $this->absences = $absences;
@@ -316,7 +322,7 @@ class ScheduleComponent extends Component
     function orderByDesc(){
         $this->orderDesc = false;
         $this->orderAsc = true;
-        $this->getAbsencesForDayAndHour($order="desc");
+        $this->getAbsencesForDayAndHour("desc");
     }
 
 
@@ -337,19 +343,22 @@ class ScheduleComponent extends Component
     function checkTimeToEdit($absence){
         $onTime = false; // Initialize the variable to track if the time to edit has passed
 
-        $currentTime = date_create(); // Get the current date and time
-        $absenceTime = date_create($absence->created_at); // Create a DateTime object from the absence's creation timestamp
-        $interval = $currentTime->diff($absenceTime); // Calculate the interval between the current time and the absence creation time
-
-        // Extract the number of days, hours, and minutes from the interval
-        $days = $interval->format("%a");
-        $hours = $interval->format("%R%h");
-        $minutes = $interval->format("%i");
-
-        // Check if the absence was created today and if the time to edit (in minutes) is still within the allowed limit
-        if ($days == 0 && $hours == 0 && $minutes <= $this->timeToEdit) {
-            $onTime = true; // The time to edit the absence is still valid
+        if ($absence->user_id==Auth::user()->id) {
+            $currentTime = date_create(); // Get the current date and time
+            $absenceTime = date_create($absence->created_at); // Create a DateTime object from the absence's creation timestamp
+            $interval = $currentTime->diff($absenceTime); // Calculate the interval between the current time and the absence creation time
+    
+            // Extract the number of days, hours, and minutes from the interval
+            $days = $interval->format("%a");
+            $hours = $interval->format("%R%h");
+            $minutes = $interval->format("%i");
+    
+            // Check if the absence was created today and if the time to edit (in minutes) is still within the allowed limit
+            if ($days == 0 && $hours == 0 && $minutes <= $this->timeToEdit) {
+                $onTime = true; // The time to edit the absence is still valid
+            }
         }
+
 
         return $onTime;
     }
