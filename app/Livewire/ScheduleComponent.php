@@ -3,11 +3,9 @@
 namespace App\Livewire;
 
 use App\Jobs\ProfessorsEmailJob;
-use App\Mail\ProfessorsMail;
 use App\Models\Absence;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
@@ -91,6 +89,11 @@ class ScheduleComponent extends Component
      * True to show the choose action buttons.
      */
     public $viewChooseAction = false;
+
+    /**
+     * indicates whether an absence has already been added on a date and time
+     */
+    public $addedAbsence = false;
 
     /**
      * Data to show weeks in the schedule dropdown
@@ -239,11 +242,23 @@ class ScheduleComponent extends Component
         $this->js("document.querySelector('html').classList.toggle('overflow-hidden')");
 
         if ($both) {
-            $this->viewChooseAction = !$this->viewChooseAction;    
+
+            if ($this->checkAddedAbsence()) {
+                $this->toggleShowAllAbsences();
+            }else{
+                $this->viewChooseAction = !$this->viewChooseAction;    
+            }
         }else {
             $this->toggleShowAddAbsence();
         }
 
+    }
+
+    /**
+     * Allows closing the "chooseAction" modal when clicking the "cancel" button.
+     */
+    function closeChooseAction(){
+        $this->viewChooseAction = false;   
     }
 
 
@@ -364,7 +379,7 @@ class ScheduleComponent extends Component
         ];
 
         $professor = [
-            'commentAbsence' => 'required|regex:/^[A-Za-z0-9áéíóúÁÉÍÓÚ\s\.\,\(\)\?\¿\!\¡]+$/|min:10|max:500'
+            'commentAbsence' => 'required|regex:/^[A-Za-z0-9áéíóúñÁÉÍÓÚÑ\s\.\,\(\)\?\¿\!\¡\-\_\:\;]+$/|min:10|max:500'
         ];
 
 
@@ -385,21 +400,30 @@ class ScheduleComponent extends Component
             ->first();
 
             if ($exist) {
-                $absence = Absence::create([
-                    'user_id' => $exist->id,
-                    'comment' => $this->commentAbsence,
-                    'startHour' => $this->morningSchedule[$this->hourNumber][0],
-                    'endHour' => $this->morningSchedule[$this->hourNumber][1],
-                    'hourNumber' => $this->hourNumber,
-                    'dayNumber' => $this->dayNumber,
-                    'week' => $this->weekNumber,
-                    'shift' => $this->shift,
-                ]);
 
-                dispatch(new ProfessorsEmailJob($exist, $absence, $this->weeks[$this->weekNumber], $this->days[$this->dayNumber]));
-
-                $this->toggleShowAddAbsence(true);
-                $this->getAllAbsencesAsec();
+                if (!$this->checkAddedAbsence($exist->id)) {
+                    
+                    $absence = Absence::create([
+                        'user_id' => $exist->id,
+                        'comment' => $this->commentAbsence,
+                        'startHour' => $this->shiftSchedule[$this->hourNumber][0],
+                        'endHour' => $this->shiftSchedule[$this->hourNumber][1],
+                        'hourNumber' => $this->hourNumber,
+                        'dayNumber' => $this->dayNumber,
+                        'week' => $this->weekNumber,
+                        'shift' => $this->shift,
+                    ]);
+                
+                    dispatch(new ProfessorsEmailJob($exist, $absence, $this->weeks[$this->weekNumber], $this->days[$this->dayNumber]));
+                    
+                    $this->toggleShowAddAbsence(true);
+                    $this->getAllAbsencesAsec();
+                }else {
+                    throw ValidationException::withMessages([
+                        'professorDepartment' => ['Ese profesor ya tiene una ausencia para ese día a esa hora'],
+                    ]);
+                }
+                
             }else {
                 throw ValidationException::withMessages([
                     'professorDepartment' => ['El profesor no pertenece a ese departamento'],
@@ -416,8 +440,8 @@ class ScheduleComponent extends Component
             $absence = Absence::create([
                 'user_id' => Auth::id(),
                 'comment' => $this->commentAbsence,
-                'startHour' => $this->morningSchedule[$this->hourNumber][0],
-                'endHour' => $this->morningSchedule[$this->hourNumber][1],
+                'startHour' => $this->shiftSchedule[$this->hourNumber][0],
+                'endHour' => $this->shiftSchedule[$this->hourNumber][1],
                 'hourNumber' => $this->hourNumber,
                 'dayNumber' => $this->dayNumber,
                 'week' => $this->weekNumber,
@@ -499,13 +523,44 @@ class ScheduleComponent extends Component
     }
 
 
-    public function afternoonShift(){
+    /**
+     * Manages how different modals are displayed. If the user in the current session has already added an 
+     * absence for that specific time, day, and week, the "ViewAllAbsences" modal will be shown directly to prevent adding another absence.
+     */
+    function checkAddedAbsence($user = null){
+        
+        if (!$user) {
+            $user = Auth::id();
+        }
+        
+        $addedAbsence = DB::table('absences')
+        ->where('user_id', $user)
+        ->where('startHour', $this->shiftSchedule[$this->hourNumber][0])
+        ->where('endHour', $this->shiftSchedule[$this->hourNumber][1])
+        ->where('hourNumber', $this->hourNumber)
+        ->where('dayNumber', $this->dayNumber)
+        ->where('week', $this->weekNumber)
+        ->where('shift', $this->shift)
+        ->first();
+        
+        return $addedAbsence;   
+    }
+
+
+    /**
+     * Allows selecting and displaying the afternoon shift schedule.
+     */
+    function afternoonShift(){
         $this->shiftSchedule = $this->afternoonSchedule;
         $this->shift = "afternoon";
         $this->getAllAbsencesAsec();
     }
 
-    public function morningShift(){
+
+    /**
+     * Allows selecting and displaying the morning shift schedule.
+     */
+    function morningShift(){
         $this->shiftSchedule = $this->morningSchedule;
         $this->shift = "morning";
         $this->getAllAbsencesAsec();
@@ -516,8 +571,8 @@ class ScheduleComponent extends Component
      * Mount the component
      */
     function mount(){
-        $this->shiftSchedule = $this->morningSchedule;
-        $this->shift = "morning";
+        $this->shiftSchedule = $this->afternoonSchedule;
+        $this->shift = "afternoon";
         $this->getDateSchedule();
         $this->getAllAbsencesAsec();
         $this->getDepartments();

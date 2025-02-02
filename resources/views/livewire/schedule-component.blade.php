@@ -2,13 +2,14 @@
     <!-- component -->
     <div class="p-2">
 
+        <!-- START SCHEDULE -->
         <div class="lg:w-7/12 md:w-9/12 sm:w-10/12 mx-auto my-4">
             <div class="bg-white shadow-lg shadow-gray-600 rounded-xl">
 
                 {{-- Header --}}
                 <div class="flex flex-col sm:flex-row justify-between p-5 gap-5 sm:gap-0">
 
-                    <!-- Table description -->
+                    <!-- Table description and week selector-->
                     <div class="flex items-center justify-between">
                         <div class="flex items-center w-full">
                             <div>
@@ -54,7 +55,7 @@
                     </div>
                 </div>
 
-                {{-- Morning Schedule --}}
+                {{-- Schedule --}}
                 <div class="grid grid-cols-[10%_1fr_1fr_1fr_1fr_1fr] gap-2 p-4 text-center w-full" id="morning-Schedule">
                     <div class="text-sm">Hora</div>
                     <div class="text-sm">Lunes</div>
@@ -76,7 +77,6 @@
                                 <a href="#header-layout" wire:click="chooseAction({{true}}, {{$loop->parent->index}}, {{$loop->index}})" class="checkbox border-2 rounded-lg flex justify-center sm:block cursor-pointer" style="background-color: {{$hour[3]}}">
                                     <div class="rounded-lg w-7 h-6 sm:w-10 sm:h-8 m-2 text-sm flex items-center justify-center text-gray-500" style="background-color: {{$hour[2]}}">{{ $this->absencesTotalForDay }}</div>
                                 </a>
-
                             @else
                                 <a href="#header-layout" wire:click="chooseAction(@js(false), {{$loop->parent->index}}, {{$loop->index}})" class="checkbox border-2 rounded-lg flex justify-center sm:block cursor-pointer" style="background-color: {{$hour[3]}}"></a>
                             @endif
@@ -86,7 +86,7 @@
                 </div>
             </div>
         </div>
-
+        <!-- START SCHEDULE -->
         
         <!-- MODAL CHOOSE ACTION START -->
         @if ($viewChooseAction)
@@ -105,7 +105,7 @@
                     </div>
                     
                     <div class="flex justify-center">
-                        <button wire:click="chooseAction({{true}})" class="tracking-widest rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-xs font-semibold text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
+                        <button wire:click="closeChooseAction" class="tracking-widest rounded-md bg-gray-800 py-2 px-4 border border-transparent text-center text-xs font-semibold text-gray-300 transition-all shadow-md hover:shadow-lg focus:bg-gray-700 focus:shadow-none active:bg-gray-700 hover:bg-gray-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" type="button">
                             CANCELAR
                         </button>
                     </div>
@@ -130,7 +130,7 @@
                                         <option value="{{$department->id}}">{{$department->name}}</option>
                                     @endforeach
                                 </select>
-                                @error('professorDepartment') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                @error('professorDepartment') <span class="text-red-500 text-sm ms-2">{{ $message }}</span> @enderror
                             </label>
 
                             <div class="flex gap-4 flex-col sm:flex-row">
